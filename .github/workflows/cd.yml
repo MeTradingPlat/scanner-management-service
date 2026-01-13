@@ -19,15 +19,15 @@ jobs:
       - name: Run Postgres Container
         run: |
           # Check if container exists, if so start it, if not run it
-          if [ ! "$(docker ps -a -q -f name=postgres-scanners)" ]; then
+          if [ -z "$(docker ps -a -q -f name=postgres-scanners)" ]; then
             echo "Creating and starting postgres-scanners container..."
             docker run -d \
-              --name postgres-scanners \
-              --network metradingplat-network \
-              --restart always \
-              -e POSTGRES_DB=bd_scanners \
-              -e POSTGRES_USER=user_scanners \
-              -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+              --name "postgres-scanners" \
+              --network "metradingplat-network" \
+              --restart "always" \
+              -e POSTGRES_DB="bd_scanners" \
+              -e POSTGRES_USER="user_scanners" \
+              -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
               -p 5433:5432 \
               -v postgres_scanners_data:/var/lib/postgresql/data \
               postgres:15-alpine
@@ -46,19 +46,19 @@ jobs:
         run: |
           docker run -d \
             -p 8081:8081 \
-            --name scanner-management-service \
-            --network metradingplat-network \
-            --label project=metradingplat \
-            --label service=scanner-management-service \
-            -e SPRING_PROFILES_ACTIVE=prod \
-            -e DB_HOST=postgres-scanners \
-            -e DB_PORT=5432 \
-            -e DB_NAME=bd_scanners \
-            -e POSTGRES_USER=user_scanners \
-            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
-            -e SSL_ENABLED=false \
-            -e SSL_MODE=disable \
-            -e EUREKA_HOST=directory \
+            --name "scanner-management-service" \
+            --network "metradingplat-network" \
+            --label project="metradingplat" \
+            --label service="scanner-management-service" \
+            -e SPRING_PROFILES_ACTIVE="prod" \
+            -e DB_HOST="postgres-scanners" \
+            -e DB_PORT="5432" \
+            -e DB_NAME="bd_scanners" \
+            -e POSTGRES_USER="user_scanners" \
+            -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
+            -e SSL_ENABLED="false" \
+            -e SSL_MODE="disable" \
+            -e EUREKA_HOST="directory" \
             virtud142/metradingplat_scanner_management_service:latest
 
       - name: Clean Old Images of This Service
