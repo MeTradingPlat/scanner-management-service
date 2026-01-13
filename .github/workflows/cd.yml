@@ -47,8 +47,8 @@ jobs:
           echo "--- CLEANING SERVICE METADATA ---"
           docker rm -f scanner-management-service || true
           docker image rm -f virtud142/metradingplat_scanner_management_service:latest || true
-          docker builder prune -f
-          docker image prune -f
+          docker builder prune -f || true
+          docker image prune -f || true
 
       - name: Pull Application Image (with Retry Logic)
         run: |
@@ -102,4 +102,4 @@ jobs:
           docker ps -a --filter "label=service=scanner-management-service" --filter "status=exited" -q | xargs -r docker rm 2>/dev/null || true
 
       - name: Remove Dangling Images
-        run: docker image prune -f
+        run: docker image prune -f || true
