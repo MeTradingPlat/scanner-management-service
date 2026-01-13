@@ -36,15 +36,29 @@ jobs:
             docker start postgres-scanners
           fi
 
-      - name: Targeted Service Cleanup (No Conflicts)
+      - name: Infrastructure Diagnosis & Cleanup
         run: |
-          echo "Cleaning up only this service to avoid conflicts..."
+          echo "--- DISK SPACE CHECK ---"
+          df -h
+          echo "--- CLEANING SHARED BASE IMAGES ---"
+          docker image rm -f eclipse-temurin:21-jdk eclipse-temurin:21-jre-alpine || true
+      - name: Targeted Service Cleanup
+        run: |
+          echo "--- CLEANING SERVICE METADATA ---"
           docker rm -f scanner-management-service || true
           docker image rm -f virtud142/metradingplat_scanner_management_service:latest || true
+          docker builder prune -f
           docker image prune -f
 
-      - name: Pull Application Image
-        run: docker pull virtud142/metradingplat_scanner_management_service:latest
+      - name: Pull Application Image (with Retry Logic)
+        run: |
+          echo "Attempting to pull image with auto-retry for stability..."
+          for i in 1 2 3; do
+            docker pull virtud142/metradingplat_scanner_management_service:latest && exit 0 || \
+            (echo "Attempt $i failed, waiting 10s..." && sleep 10)
+          done
+          echo "All pull attempts failed. Docker daemon might need a manual restart."
+          exit 1
 
       - name: Delete Old Application Container
         run: docker rm -f scanner-management-service || true
