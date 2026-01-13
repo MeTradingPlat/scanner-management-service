@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://database-metradingplat.co50k2222zlq.us-east-1.rds.amazonaws.com:5432/bd_scanners?ssl=true&sslmode=require
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://directory:8761/eureka/
+  instance:
+    prefer-ip-address: true
