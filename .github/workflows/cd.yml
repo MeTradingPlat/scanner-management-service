@@ -36,11 +36,12 @@ jobs:
             docker start postgres-scanners
           fi
 
-      - name: Pre-pull Cleanup (Self-healing)
+      - name: Pre-pull Deep Cleanup (Self-healing)
         run: |
-          echo "Removing corrupted or old images to ensure a fresh pull..."
-          docker image rm -f virtud142/metradingplat_scanner_management_service:latest || true
-          docker image prune -f
+          echo "Forcing a deep cleanup to recover from Docker layer corruption..."
+          docker container stop $(docker ps -q) 2>/dev/null || true
+          docker system prune -a --volumes -f
+          echo "Cleanup complete. Starting fresh pull..."
 
       - name: Pull Application Image
         run: docker pull virtud142/metradingplat_scanner_management_service:latest
