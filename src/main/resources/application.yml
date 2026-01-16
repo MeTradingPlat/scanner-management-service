@@ -31,3 +31,13 @@ spring:
 
 server:
   port: 8081
+
+# Actuator for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
