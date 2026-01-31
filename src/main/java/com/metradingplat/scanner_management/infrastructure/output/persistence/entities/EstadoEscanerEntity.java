@@ -1,4 +1,4 @@
-package com.metradingplat.scanner_management.infrastructure.output.persistence.entitys;
+package com.metradingplat.scanner_management.infrastructure.output.persistence.entities;
 
 import java.time.LocalDateTime;
 

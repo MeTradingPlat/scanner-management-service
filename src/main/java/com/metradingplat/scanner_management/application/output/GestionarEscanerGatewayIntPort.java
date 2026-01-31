@@ -22,4 +22,6 @@ public interface GestionarEscanerGatewayIntPort {
     public List<Escaner> obtenerEscaneresDesarchivados();
 
     public List<Escaner> obtenerEscaneresArchivados();
+
+    public List<Escaner> obtenerEscaneresIniciados();
 }

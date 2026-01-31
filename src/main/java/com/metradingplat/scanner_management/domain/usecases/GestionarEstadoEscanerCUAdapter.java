@@ -11,12 +11,15 @@ import com.metradingplat.scanner_management.domain.models.EstadoEscaner;
 import com.metradingplat.scanner_management.domain.states.GestorEstadoEscaner;
 import com.metradingplat.scanner_management.domain.states.escaner.ResultadoGestorEscaner;
 
+import com.metradingplat.scanner_management.application.output.FuenteMensajesSignalProcessingIntPort;
+
 @RequiredArgsConstructor
 public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCUIntPort {
 
     private final GestionarEstadoEscanerGatewayIntPort objGestionarEstadoEscanerGatewayIntPort;
     private final GestionarEscanerGatewayIntPort objGestionarEscanerGatewayIntPort;
     private final FormateadorResultadosIntPort objFormateadorResultados;
+    private final FuenteMensajesSignalProcessingIntPort objFuenteMensajesSignalProcessing;
 
     @Override
     public EstadoEscaner iniciarEscaner(Long id) {
@@ -26,12 +29,16 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
             this.objFormateadorResultados.errorReglaNegocioViolada("validation.scanner.filters.required");
         }
 
-        return cambiarEstado(escaner, EnumEstadoEscaner.INICIADO);
+        EstadoEscaner estado = cambiarEstado(escaner, EnumEstadoEscaner.INICIADO);
+        this.objFuenteMensajesSignalProcessing.notificarEscanerIniciado(escaner);
+        return estado;
     }
 
     @Override
     public EstadoEscaner detenerEscaner(Long id) {
-        return cambiarEstado(validarEscanerExistente(id), EnumEstadoEscaner.DETENIDO);
+        EstadoEscaner estado = cambiarEstado(validarEscanerExistente(id), EnumEstadoEscaner.DETENIDO);
+        this.objFuenteMensajesSignalProcessing.notificarEscanerDetenido(id);
+        return estado;
     }
 
     @Override

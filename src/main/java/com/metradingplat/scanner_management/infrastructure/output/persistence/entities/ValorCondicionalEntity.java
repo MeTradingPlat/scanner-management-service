@@ -1,4 +1,4 @@
-package com.metradingplat.scanner_management.infrastructure.output.persistence.entitys;
+package com.metradingplat.scanner_management.infrastructure.output.persistence.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -15,13 +15,13 @@ import com.metradingplat.scanner_management.domain.models.ValorCondicional;
 import com.metradingplat.scanner_management.domain.models.ValorFloat;
 import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.FiltroEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.ParametroEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.ValorCondicionalEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.ValorEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.ValorFloatEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.ValorIntegerEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.ValorStringEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.FiltroEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.ParametroEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.ValorCondicionalEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.ValorEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.ValorFloatEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.ValorIntegerEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.ValorStringEntity;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FiltroMapperPersistencia {

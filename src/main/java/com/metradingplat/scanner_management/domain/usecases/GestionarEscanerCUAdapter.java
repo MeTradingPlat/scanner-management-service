@@ -53,6 +53,11 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
     }
 
     @Override
+    public List<Escaner> listarEscaneresIniciados() {
+        return this.objGestionarEscanerGatewayIntPort.obtenerEscaneresIniciados();
+    }
+
+    @Override
     public Escaner actualizarEscaner(Escaner objEscaner) {
         if (!this.objGestionarEscanerGatewayIntPort.existeEscanerPorId(objEscaner.getIdEscaner())) {
             this.objFormateadorResultadosIntPort.errorEntidadNoExiste("validation.scanner.id.notFound",

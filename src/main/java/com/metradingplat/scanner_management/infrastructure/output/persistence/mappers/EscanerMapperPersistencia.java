@@ -9,8 +9,8 @@ import org.mapstruct.ReportingPolicy;
 
 import com.metradingplat.scanner_management.domain.models.Escaner;
 import com.metradingplat.scanner_management.domain.models.EstadoEscaner;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.EstadoEscanerEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.EscanerEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.EstadoEscanerEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.EscanerEntity;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface EscanerMapperPersistencia {

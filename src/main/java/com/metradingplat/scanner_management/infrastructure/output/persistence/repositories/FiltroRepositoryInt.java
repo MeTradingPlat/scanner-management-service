@@ -2,7 +2,7 @@ package com.metradingplat.scanner_management.infrastructure.output.persistence.r
 
 import java.util.List;
 
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.FiltroEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.FiltroEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

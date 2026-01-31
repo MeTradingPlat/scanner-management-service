@@ -69,6 +69,14 @@ public class EscanerRestController {
         return ResponseEntity.ok(listaDtoRespuesta);
     }
 
+    @GetMapping("/iniciados")
+    public ResponseEntity<List<EscanerDTORespuesta>> listarEscaneresIniciados() {
+        List<EscanerDTORespuesta> listaDtoRespuesta = this.objMapper
+                .mappearListaDeEscanerARespuesta(this.objGestionarEscanerCUInt.listarEscaneresIniciados());
+        this.objFuenteMensajes.internacionalizarEscaneres(listaDtoRespuesta);
+        return ResponseEntity.ok(listaDtoRespuesta);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<EscanerDTORespuesta> actualizarEscaner(
             @PathVariable("id") @NotNull(message = "validation.type.positive.required") @Positive(message = "validation.type.positive.required") Long id,

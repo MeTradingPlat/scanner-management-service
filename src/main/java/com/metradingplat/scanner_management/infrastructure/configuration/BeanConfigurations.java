@@ -12,6 +12,8 @@ import com.metradingplat.scanner_management.domain.usecases.GestionarMercadoCUAd
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.metradingplat.scanner_management.application.output.FuenteMensajesSignalProcessingIntPort;
+
 @Configuration
 public class BeanConfigurations {
 
@@ -29,9 +31,10 @@ public class BeanConfigurations {
     public GestionarEstadoEscanerCUAdapter gestionarEstadoEscanerCUIntPort(
             GestionarEstadoEscanerGatewayIntPort objGestionarEstadoEscanerGatewayIntPort,
             GestionarEscanerGatewayIntPort objGestionarEscanerGatewayIntPort,
-            FormateadorResultadosIntPort objFormateadorResultados) {
+            FormateadorResultadosIntPort objFormateadorResultados,
+            FuenteMensajesSignalProcessingIntPort objFuenteMensajesSignalProcessing) {
         return new GestionarEstadoEscanerCUAdapter(objGestionarEstadoEscanerGatewayIntPort,
-                objGestionarEscanerGatewayIntPort, objFormateadorResultados);
+                objGestionarEscanerGatewayIntPort, objFormateadorResultados, objFuenteMensajesSignalProcessing);
     }
 
     @Bean

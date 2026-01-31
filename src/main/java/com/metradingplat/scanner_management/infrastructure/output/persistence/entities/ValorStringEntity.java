@@ -1,4 +1,4 @@
-package com.metradingplat.scanner_management.infrastructure.output.persistence.entitys;
+package com.metradingplat.scanner_management.infrastructure.output.persistence.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "valor_integer")
+@Table(name = "valor_string")
 @PrimaryKeyJoinColumn(name = "id_valor")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ValorIntegerEntity extends ValorEntity {
+public class ValorStringEntity extends ValorEntity {
 
     @Column(name = "valor")
-    private Integer valor;
+    private String valor;
 }

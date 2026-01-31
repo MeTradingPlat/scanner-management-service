@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaAuditing
 @EnableTransactionManagement
 @EnableJpaRepositories(basePackages = "com.metradingplat.scanner_management.infrastructure.output.persistence.repositories")
-@EntityScan(basePackages = "com.metradingplat.scanner_management.infrastructure.output.persistence.entitys")
+@EntityScan(basePackages = "com.metradingplat.scanner_management.infrastructure.output.persistence.entities")
 public class JpaConfiguration {
 
     @Bean

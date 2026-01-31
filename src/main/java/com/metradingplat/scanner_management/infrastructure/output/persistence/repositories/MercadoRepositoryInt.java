@@ -1,7 +1,7 @@
 package com.metradingplat.scanner_management.infrastructure.output.persistence.repositories;
 
 import com.metradingplat.scanner_management.domain.enums.EnumMercado;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.MercadoEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.MercadoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -5,8 +5,8 @@ import com.metradingplat.scanner_management.application.output.GestionarEstadoEs
 import com.metradingplat.scanner_management.domain.enums.EnumEstadoEscaner;
 import com.metradingplat.scanner_management.domain.models.Escaner;
 import com.metradingplat.scanner_management.domain.models.EstadoEscaner;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.EscanerEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.EstadoEscanerEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.EscanerEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.EstadoEscanerEntity;
 import com.metradingplat.scanner_management.infrastructure.output.persistence.mappers.EscanerMapperPersistencia;
 import com.metradingplat.scanner_management.infrastructure.output.persistence.repositories.EscanerRepositoryInt;
 import org.springframework.stereotype.Service;

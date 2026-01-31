@@ -3,7 +3,7 @@ package com.metradingplat.scanner_management.infrastructure.output.persistence.r
 import java.util.List;
 import java.util.Optional;
 
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.EscanerEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.EscanerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,4 +40,12 @@ public interface EscanerRepositoryInt extends JpaRepository<EscanerEntity, Long>
                      WHERE s.enumEstadoEscaner = 'ARCHIVADO'
                      """)
        List<EscanerEntity> findArchivadosBasic();
+
+       // Iniciados: nombre + estado cargado
+       @Query("""
+                     SELECT DISTINCT e FROM EscanerEntity e
+                     JOIN FETCH e.objEstado s
+                     WHERE s.enumEstadoEscaner = 'INICIADO'
+                     """)
+       List<EscanerEntity> findIniciadosWithEstado();
 }

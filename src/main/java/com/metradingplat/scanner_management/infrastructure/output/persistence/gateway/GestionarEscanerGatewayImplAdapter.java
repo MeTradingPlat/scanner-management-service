@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import com.metradingplat.scanner_management.application.output.GestionarEscanerGatewayIntPort;
 import com.metradingplat.scanner_management.domain.enums.EnumMercado;
 import com.metradingplat.scanner_management.domain.models.Escaner;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.EscanerEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.MercadoEntity;
-import com.metradingplat.scanner_management.infrastructure.output.persistence.entitys.TipoEjecucionEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.EscanerEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.MercadoEntity;
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.TipoEjecucionEntity;
 import com.metradingplat.scanner_management.infrastructure.output.persistence.mappers.EscanerMapperPersistencia;
 import com.metradingplat.scanner_management.infrastructure.output.persistence.repositories.EscanerRepositoryInt;
 import com.metradingplat.scanner_management.infrastructure.output.persistence.repositories.MercadoRepositoryInt;
@@ -111,6 +111,14 @@ public class GestionarEscanerGatewayImplAdapter implements GestionarEscanerGatew
     @Transactional(readOnly = true)
     public List<Escaner> obtenerEscaneresArchivados() {
         List<EscanerEntity> entitys = this.objEscanerRepository.findArchivadosBasic();
+        List<Escaner> escaneres = this.objMapper.mappearListaDeEntityAEscaner(entitys);
+        return escaneres;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Escaner> obtenerEscaneresIniciados() {
+        List<EscanerEntity> entitys = this.objEscanerRepository.findIniciadosWithEstado();
         List<Escaner> escaneres = this.objMapper.mappearListaDeEntityAEscaner(entitys);
         return escaneres;
     }

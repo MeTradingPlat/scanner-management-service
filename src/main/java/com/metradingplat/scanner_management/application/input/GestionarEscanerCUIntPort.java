@@ -16,4 +16,6 @@ public interface GestionarEscanerCUIntPort {
     public Escaner actualizarEscaner(Escaner escaner);
 
     public Boolean eliminarEscaner(Long idEscaner);
+
+    public List<Escaner> listarEscaneresIniciados();
 }
