@@ -19,7 +19,7 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
     @Override
     public void notificarEscanerIniciado(Escaner escaner) {
         try {
-            restTemplate.postForLocation(signalProcessingUrl + "/escaner", escaner);
+            restTemplate.postForLocation(signalProcessingUrl + "/api/signal-processing/escaner", escaner);
         } catch (Exception e) {
             // Log error safely
             System.err.println("Error notificando inicio escaner a signal-processing: " + e.getMessage());
@@ -29,7 +29,8 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
     @Override
     public void notificarEscanerDetenido(Long idEscaner) {
         try {
-            restTemplate.postForLocation(signalProcessingUrl + "/escaner/" + idEscaner + "/detener", null);
+            restTemplate.postForLocation(
+                    signalProcessingUrl + "/api/signal-processing/escaner/" + idEscaner + "/detener", null);
         } catch (Exception e) {
             System.err.println("Error notificando detencion escaner a signal-processing: " + e.getMessage());
         }
