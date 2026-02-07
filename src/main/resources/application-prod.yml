@@ -23,6 +23,10 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+service:
+  signal-processing:
+    url: ${SIGNAL_PROCESSING_URL:http://signal-processing-service:8000}
+
 eureka:
   client:
     service-url:

@@ -33,6 +33,7 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
 
         EstadoEscaner estado = cambiarEstado(escaner, EnumEstadoEscaner.INICIADO);
         this.objFuenteMensajesSignalProcessing.notificarEscanerIniciado(escaner);
+        publicarNotificacionCambioEstado(id, "INICIADO", "Escaner iniciado por usuario");
         return estado;
     }
 
