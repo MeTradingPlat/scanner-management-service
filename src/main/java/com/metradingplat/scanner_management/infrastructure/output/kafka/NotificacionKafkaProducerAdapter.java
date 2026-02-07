@@ -20,15 +20,24 @@ public class NotificacionKafkaProducerAdapter implements NotificacionKafkaProduc
 
     @Override
     public void publicarNotificacion(Long idEscaner, String tipo, String nivel, String mensaje, String categoria) {
+        log.info("[KAFKA-PRODUCER] Preparando notificacion: idEscaner={}, tipo={}, nivel={}, categoria={}",
+                idEscaner, tipo, nivel, categoria);
         Map<String, Object> notificacion = new HashMap<>();
         notificacion.put("servicioOrigen", "scanner-management-service");
         notificacion.put("nivel", nivel);
         notificacion.put("mensaje", mensaje);
         notificacion.put("idEscaner", idEscaner);
         notificacion.put("categoria", categoria);
+        notificacion.put("tipo", tipo);
         notificacion.put("timestamp", LocalDateTime.now().toString());
 
-        kafkaTemplate.send(TOPIC, notificacion);
-        log.debug("Notificacion publicada: escaner={}, mensaje={}", idEscaner, mensaje);
+        try {
+            kafkaTemplate.send(TOPIC, notificacion);
+            log.info("[KAFKA-PRODUCER] Notificacion enviada OK a topic={}: idEscaner={}, mensaje={}",
+                    TOPIC, idEscaner, mensaje);
+        } catch (Exception e) {
+            log.error("[KAFKA-PRODUCER] ERROR enviando notificacion: idEscaner={}, error={}",
+                    idEscaner, e.getMessage());
+        }
     }
 }
