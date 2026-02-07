@@ -12,6 +12,7 @@ import com.metradingplat.scanner_management.domain.states.GestorEstadoEscaner;
 import com.metradingplat.scanner_management.domain.states.escaner.ResultadoGestorEscaner;
 
 import com.metradingplat.scanner_management.application.output.FuenteMensajesSignalProcessingIntPort;
+import com.metradingplat.scanner_management.application.output.NotificacionKafkaProducerIntPort;
 
 @RequiredArgsConstructor
 public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCUIntPort {
@@ -20,6 +21,7 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
     private final GestionarEscanerGatewayIntPort objGestionarEscanerGatewayIntPort;
     private final FormateadorResultadosIntPort objFormateadorResultados;
     private final FuenteMensajesSignalProcessingIntPort objFuenteMensajesSignalProcessing;
+    private final NotificacionKafkaProducerIntPort objNotificacionProducer;
 
     @Override
     public EstadoEscaner iniciarEscaner(Long id) {
@@ -38,6 +40,16 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
     public EstadoEscaner detenerEscaner(Long id) {
         EstadoEscaner estado = cambiarEstado(validarEscanerExistente(id), EnumEstadoEscaner.DETENIDO);
         this.objFuenteMensajesSignalProcessing.notificarEscanerDetenido(id);
+        publicarNotificacionCambioEstado(id, "DETENIDO", "Escaner detenido por usuario");
+        return estado;
+    }
+
+    @Override
+    public EstadoEscaner detenerEscanerInterno(Long id) {
+        Escaner escaner = validarEscanerExistente(id);
+        EstadoEscaner estado = cambiarEstado(escaner, EnumEstadoEscaner.DETENIDO);
+        // No notificar a signal-processing (ya lo sabe, el evento viene de alli)
+        publicarNotificacionCambioEstado(id, "DETENIDO", "Escaner UNA_VEZ completado");
         return estado;
     }
 
@@ -68,5 +80,17 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
         }
 
         return this.objGestionarEstadoEscanerGatewayIntPort.cambiarEstadoDeEscaner(escaner, nuevoEstado);
+    }
+
+    private void publicarNotificacionCambioEstado(Long idEscaner, String nuevoEstado, String mensaje) {
+        if (this.objNotificacionProducer != null) {
+            this.objNotificacionProducer.publicarNotificacion(
+                idEscaner,
+                "SCANNER_STATE",
+                "INFO",
+                mensaje,
+                "SCANNER"
+            );
+        }
     }
 }
