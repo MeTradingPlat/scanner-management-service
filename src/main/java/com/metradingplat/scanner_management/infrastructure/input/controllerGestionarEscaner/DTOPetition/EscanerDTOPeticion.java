@@ -3,6 +3,7 @@ package com.metradingplat.scanner_management.infrastructure.input.controllerGest
 import java.time.LocalTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,9 +28,11 @@ public class EscanerDTOPeticion {
     private String descripcion;
 
     @NotNull(message = "validation.required.field")
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "UTC")
     private LocalTime horaInicio;
 
     @NotNull(message = "validation.required.field")
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "UTC")
     private LocalTime horaFin;
 
     @NotNull(message = "validation.scanner.executionType.required")

@@ -17,8 +17,23 @@ public class Escaner {
     private Long idEscaner;
     private String nombre;
     private String descripcion;
+
+    /**
+     * Hora de inicio del escáner en UTC.
+     * IMPORTANTE: Esta hora está en timezone UTC, no local.
+     * El frontend debe convertir de hora local a UTC antes de enviar,
+     * y de UTC a hora local al mostrar.
+     */
     private LocalTime horaInicio;
+
+    /**
+     * Hora de fin del escáner en UTC.
+     * IMPORTANTE: Esta hora está en timezone UTC, no local.
+     * El frontend debe convertir de hora local a UTC antes de enviar,
+     * y de UTC a hora local al mostrar.
+     */
     private LocalTime horaFin;
+
     private LocalDate fechaCreacion;
     private EstadoEscaner objEstado;
     private TipoEjecucion objTipoEjecucion;
