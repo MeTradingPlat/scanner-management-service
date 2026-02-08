@@ -53,6 +53,7 @@ public class NotificacionKafkaProducerAdapter implements NotificacionKafkaProduc
         evento.put("estadoNuevo", estadoNuevo);
         evento.put("razon", razon);
         evento.put("timestamp", LocalDateTime.now().toString());
+        evento.put("servicioOrigen", "scanner-management-service");
 
         try {
             kafkaTemplate.send(TOPIC_SCANNER_STATE, evento);

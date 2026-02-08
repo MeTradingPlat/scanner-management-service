@@ -16,8 +16,14 @@ public class EstadoEscanerKafkaListener {
 
     @KafkaListener(topics = "scanner.state", groupId = "scanner-management-group")
     public void procesarCambioEstado(EstadoEscanerEventoDTO evento) {
-        log.info("Recibido evento de estado: escaner={}, estado={}, razon={}",
-                evento.getIdEscaner(), evento.getEstadoNuevo(), evento.getRazon());
+        log.info("Recibido evento de estado: escaner={}, estado={}, razon={}, origen={}",
+                evento.getIdEscaner(), evento.getEstadoNuevo(), evento.getRazon(), evento.getServicioOrigen());
+
+        // Ignorar eventos publicados por este mismo servicio (evita loop)
+        if ("scanner-management-service".equals(evento.getServicioOrigen())) {
+            log.debug("Ignorando evento propio de scanner-management-service");
+            return;
+        }
 
         try {
             if ("DETENIDO".equals(evento.getEstadoNuevo()) &&

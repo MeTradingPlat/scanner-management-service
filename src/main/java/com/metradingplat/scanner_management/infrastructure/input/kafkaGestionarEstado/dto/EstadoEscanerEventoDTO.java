@@ -14,4 +14,5 @@ public class EstadoEscanerEventoDTO {
     private String estadoNuevo;
     private String razon;
     private String timestamp;
+    private String servicioOrigen;
 }
