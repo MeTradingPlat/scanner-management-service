@@ -16,7 +16,7 @@ import java.util.Map;
 public class NotificacionKafkaProducerAdapter implements NotificacionKafkaProducerIntPort {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private static final String TOPIC_LOGS = "logs.notifications";
+    private static final String TOPIC_LOGS = "logs";
     private static final String TOPIC_SCANNER_STATE = "scanner.state";
 
     @Override
