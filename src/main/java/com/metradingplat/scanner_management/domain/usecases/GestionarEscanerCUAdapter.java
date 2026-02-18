@@ -63,6 +63,7 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
             this.objFormateadorResultadosIntPort.errorEntidadNoExiste("validation.scanner.id.notFound",
                     objEscaner.getIdEscaner());
         }
+        validarEstadoPermiteModificacion(objEscaner.getIdEscaner());
         if (this.objGestionarEscanerGatewayIntPort.existeEscanerPorNombre(objEscaner.getIdEscaner(),
                 objEscaner.getNombre())) {
             this.objFormateadorResultadosIntPort.errorEntidadYaExiste("validation.scanner.name.exists");
@@ -84,7 +85,21 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
         if (!this.objGestionarEscanerGatewayIntPort.existeEscanerPorId(idEscaner)) {
             this.objFormateadorResultadosIntPort.errorEntidadNoExiste("validation.scanner.id.notFound", idEscaner);
         }
+        validarEstadoPermiteModificacion(idEscaner);
         Boolean respuesta = this.objGestionarEscanerGatewayIntPort.eliminarEscaner(idEscaner);
         return respuesta;
+    }
+
+    /**
+     * Valida que el escaner este en un estado que permita edicion/eliminacion.
+     * Solo se permite en DETENIDO o ARCHIVADO.
+     */
+    private void validarEstadoPermiteModificacion(Long idEscaner) {
+        EnumEstadoEscaner estadoActual = this.objGestionarEstadoEscanerGatewayIntPort
+                .obtenerEstadoDeEscanerActual(idEscaner);
+        if (estadoActual == EnumEstadoEscaner.INICIADO) {
+            this.objFormateadorResultadosIntPort.errorEstadoDenegado(
+                    "validation.scanner.state.cannotModifyWhileRunning", idEscaner);
+        }
     }
 }
