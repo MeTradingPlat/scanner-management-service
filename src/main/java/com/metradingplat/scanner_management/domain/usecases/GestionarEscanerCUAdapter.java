@@ -5,6 +5,7 @@ import com.metradingplat.scanner_management.application.input.GestionarEscanerCU
 import com.metradingplat.scanner_management.application.output.FormateadorResultadosIntPort;
 import com.metradingplat.scanner_management.application.output.GestionarEscanerGatewayIntPort;
 import com.metradingplat.scanner_management.application.output.GestionarEstadoEscanerGatewayIntPort;
+import com.metradingplat.scanner_management.application.output.LimpiezaDatosEscanerIntPort;
 import com.metradingplat.scanner_management.domain.enums.EnumEstadoEscaner;
 import com.metradingplat.scanner_management.domain.models.Escaner;
 
@@ -16,6 +17,7 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
     private final GestionarEscanerGatewayIntPort objGestionarEscanerGatewayIntPort;
     private final GestionarEstadoEscanerGatewayIntPort objGestionarEstadoEscanerGatewayIntPort;
     private final FormateadorResultadosIntPort objFormateadorResultadosIntPort;
+    private final LimpiezaDatosEscanerIntPort objLimpiezaDatosEscaner;
 
     @Override
     public Escaner crearEscaner(Escaner objEscaner) {
@@ -86,6 +88,9 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
             this.objFormateadorResultadosIntPort.errorEntidadNoExiste("validation.scanner.id.notFound", idEscaner);
         }
         validarEstadoPermiteModificacion(idEscaner);
+        // Limpiar datos relacionados en otros servicios antes de eliminar
+        this.objLimpiezaDatosEscaner.eliminarLogsPorEscaner(idEscaner);
+        this.objLimpiezaDatosEscaner.eliminarActivosPorEscaner(idEscaner);
         Boolean respuesta = this.objGestionarEscanerGatewayIntPort.eliminarEscaner(idEscaner);
         return respuesta;
     }

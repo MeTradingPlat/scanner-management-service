@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.metradingplat.scanner_management.application.output.FuenteMensajesSignalProcessingIntPort;
+import com.metradingplat.scanner_management.application.output.LimpiezaDatosEscanerIntPort;
 import com.metradingplat.scanner_management.application.output.NotificacionKafkaProducerIntPort;
 
 @Configuration
@@ -23,9 +24,10 @@ public class BeanConfigurations {
     public GestionarEscanerCUAdapter gestionarEscanerCUIntPort(
             GestionarEscanerGatewayIntPort objGestionarEscanerGatewayIntPort,
             GestionarEstadoEscanerGatewayIntPort objGestionarEstadoEscanerGateWayIntPort,
-            FormateadorResultadosIntPort objFormateadorResultadosIntPort) {
+            FormateadorResultadosIntPort objFormateadorResultadosIntPort,
+            LimpiezaDatosEscanerIntPort objLimpiezaDatosEscaner) {
         return new GestionarEscanerCUAdapter(objGestionarEscanerGatewayIntPort, objGestionarEstadoEscanerGateWayIntPort,
-                objFormateadorResultadosIntPort);
+                objFormateadorResultadosIntPort, objLimpiezaDatosEscaner);
     }
 
     @Bean
