@@ -65,7 +65,7 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
             this.objFormateadorResultadosIntPort.errorEntidadNoExiste("validation.scanner.id.notFound",
                     objEscaner.getIdEscaner());
         }
-        validarEstadoPermiteModificacion(objEscaner.getIdEscaner());
+        validarEstadoPermiteEdicion(objEscaner.getIdEscaner());
         if (this.objGestionarEscanerGatewayIntPort.existeEscanerPorNombre(objEscaner.getIdEscaner(),
                 objEscaner.getNombre())) {
             this.objFormateadorResultadosIntPort.errorEntidadYaExiste("validation.scanner.name.exists");
@@ -87,7 +87,7 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
         if (!this.objGestionarEscanerGatewayIntPort.existeEscanerPorId(idEscaner)) {
             this.objFormateadorResultadosIntPort.errorEntidadNoExiste("validation.scanner.id.notFound", idEscaner);
         }
-        validarEstadoPermiteModificacion(idEscaner);
+        validarEstadoPermiteEliminacion(idEscaner);
         // Limpiar datos relacionados en otros servicios antes de eliminar
         this.objLimpiezaDatosEscaner.eliminarLogsPorEscaner(idEscaner);
         this.objLimpiezaDatosEscaner.eliminarActivosPorEscaner(idEscaner);
@@ -95,16 +95,21 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
         return respuesta;
     }
 
-    /**
-     * Valida que el escaner este en un estado que permita edicion/eliminacion.
-     * Solo se permite en DETENIDO o ARCHIVADO.
-     */
-    private void validarEstadoPermiteModificacion(Long idEscaner) {
+    private void validarEstadoPermiteEdicion(Long idEscaner) {
         EnumEstadoEscaner estadoActual = this.objGestionarEstadoEscanerGatewayIntPort
                 .obtenerEstadoDeEscanerActual(idEscaner);
         if (estadoActual == EnumEstadoEscaner.INICIADO) {
             this.objFormateadorResultadosIntPort.errorEstadoDenegado(
-                    "validation.scanner.state.cannotModifyWhileRunning", idEscaner);
+                    "validation.scanner.state.cannotEditWhileRunning");
+        }
+    }
+
+    private void validarEstadoPermiteEliminacion(Long idEscaner) {
+        EnumEstadoEscaner estadoActual = this.objGestionarEstadoEscanerGatewayIntPort
+                .obtenerEstadoDeEscanerActual(idEscaner);
+        if (estadoActual == EnumEstadoEscaner.INICIADO) {
+            this.objFormateadorResultadosIntPort.errorEstadoDenegado(
+                    "validation.scanner.state.cannotDeleteWhileRunning");
         }
     }
 }
