@@ -3,6 +3,9 @@ package com.metradingplat.scanner_management.infrastructure.output.comunicacione
 import com.metradingplat.scanner_management.application.output.LimpiezaDatosEscanerIntPort;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,12 +21,18 @@ public class LimpiezaDatosEscanerAdapter implements LimpiezaDatosEscanerIntPort 
     @Value("${service.asset-management.url:http://asset-management-service:8083}")
     private String assetManagementServiceUrl;
 
+    private HttpEntity<Void> requestConHeaderGateway() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Gateway-Passed", "true");
+        return new HttpEntity<>(headers);
+    }
+
     @Override
     public void eliminarLogsPorEscaner(Long idEscaner) {
         String url = logServiceUrl + "/api/logs/escaner/" + idEscaner;
         log.info("Eliminando logs del escaner {}: {}", idEscaner, url);
         try {
-            restTemplate.delete(url);
+            restTemplate.exchange(url, HttpMethod.DELETE, requestConHeaderGateway(), Void.class);
             log.info("Logs del escaner {} eliminados correctamente", idEscaner);
         } catch (Exception e) {
             log.error("Error eliminando logs del escaner {}: {}", idEscaner, e.getMessage());
@@ -35,7 +44,7 @@ public class LimpiezaDatosEscanerAdapter implements LimpiezaDatosEscanerIntPort 
         String url = assetManagementServiceUrl + "/api/activos/escaner/" + idEscaner;
         log.info("Eliminando activos del escaner {}: {}", idEscaner, url);
         try {
-            restTemplate.delete(url);
+            restTemplate.exchange(url, HttpMethod.DELETE, requestConHeaderGateway(), Void.class);
             log.info("Activos del escaner {} eliminados correctamente", idEscaner);
         } catch (Exception e) {
             log.error("Error eliminando activos del escaner {}: {}", idEscaner, e.getMessage());
