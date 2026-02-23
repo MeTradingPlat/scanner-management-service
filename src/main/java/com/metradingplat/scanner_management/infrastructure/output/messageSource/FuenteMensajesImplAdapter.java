@@ -19,6 +19,8 @@ import com.metradingplat.scanner_management.infrastructure.input.controllerGesti
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ParametroDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarMercado.DTOAnswer.MercadoDTORespuesta;
+import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorCondicionalDTORespuesta;
+import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
 
 @Component
 @RequiredArgsConstructor
@@ -149,7 +151,22 @@ public class FuenteMensajesImplAdapter implements FuenteMensajesIntPort {
     public ValorDTORespuesta internacionalizarValor(ValorDTORespuesta objeto) {
         if (objeto == null)
             return null;
-        objeto.setEtiqueta(this.obtenerMensaje(objeto.getEtiqueta(), this.getLocale()));
+
+        if (objeto instanceof ValorCondicionalDTORespuesta condicional) {
+            String etiquetaBase = this.obtenerMensaje(condicional.getEnumCondicional().getEtiqueta(), this.getLocale());
+            String etiquetaFormateada = switch (condicional.getEnumCondicional()) {
+                case MAYOR_QUE -> etiquetaBase + " " + condicional.getValor1();
+                case MENOR_QUE -> etiquetaBase + " " + condicional.getValor1();
+                case IGUAL_A -> etiquetaBase + " " + condicional.getValor1();
+                case ENTRE -> etiquetaBase + " " + condicional.getValor1() + " - " + condicional.getValor2();
+                case FUERA -> etiquetaBase + " " + condicional.getValor1() + " - " + condicional.getValor2();
+                default -> etiquetaBase;
+            };
+            objeto.setEtiqueta(etiquetaFormateada);
+        } else {
+            objeto.setEtiqueta(this.obtenerMensaje(objeto.getEtiqueta(), this.getLocale()));
+        }
+
         return objeto;
     }
 
