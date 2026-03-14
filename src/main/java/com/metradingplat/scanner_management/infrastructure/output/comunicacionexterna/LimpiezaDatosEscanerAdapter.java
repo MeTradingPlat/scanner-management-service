@@ -1,6 +1,7 @@
 package com.metradingplat.scanner_management.infrastructure.output.comunicacionexterna;
 
 import com.metradingplat.scanner_management.application.output.LimpiezaDatosEscanerIntPort;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -11,9 +12,10 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class LimpiezaDatosEscanerAdapter implements LimpiezaDatosEscanerIntPort {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Value("${service.log.url:http://log-service:8084}")
     private String logServiceUrl;

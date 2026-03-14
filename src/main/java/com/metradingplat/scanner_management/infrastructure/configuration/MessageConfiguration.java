@@ -1,10 +1,13 @@
 package com.metradingplat.scanner_management.infrastructure.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
@@ -37,5 +40,14 @@ public class MessageConfiguration {
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
         localeResolver.setDefaultLocale(Locale.of("es", "CO"));
         return localeResolver;
+    }
+
+    @Bean
+    public RestTemplate restTemplate(ObjectMapper objectMapper) {
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter(objectMapper);
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().removeIf(c -> c instanceof MappingJackson2HttpMessageConverter);
+        restTemplate.getMessageConverters().add(converter);
+        return restTemplate;
     }
 }

@@ -14,13 +14,14 @@ import org.springframework.beans.factory.annotation.Value;
 @Slf4j
 public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignalProcessingIntPort {
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     private final GestorEstrategiaFiltroIntPort gestorFiltros;
 
     @Value("${service.signal-processing.url:http://localhost:8000}")
     private String signalProcessingUrl;
 
-    public ComunicacionSignalProcessingAdapter(GestorEstrategiaFiltroIntPort gestorFiltros) {
+    public ComunicacionSignalProcessingAdapter(RestTemplate restTemplate, GestorEstrategiaFiltroIntPort gestorFiltros) {
+        this.restTemplate = restTemplate;
         this.gestorFiltros = gestorFiltros;
     }
 
