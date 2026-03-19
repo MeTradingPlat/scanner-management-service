@@ -121,9 +121,15 @@ public class FiltroFactoryRSI implements IFiltroFactory {
                                 opciones);
         }
 
+        private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
+                        EnumTimeframe._1M, EnumTimeframe._5M, EnumTimeframe._15M,
+                        EnumTimeframe._30M, EnumTimeframe._1H);
+
         private Parametro crearParametroTimeframe(ValorString valorUsuario) {
                 EnumTipoValor enumTipoValor = EnumTipoValor.STRING;
-                List<Valor> opciones = this.obtenerOpciones(EnumTimeframe.values());
+                List<Valor> opciones = TIMEFRAMES_SOPORTADOS.stream()
+                                .map(e -> new ValorString(e.getEtiqueta(), enumTipoValor, e.getName()))
+                                .collect(Collectors.toList());
                 EnumTimeframe enumValor = valorUsuario != null ? EnumTimeframe.valueOf(valorUsuario.getValor())
                                 : EnumTimeframe._1M;
                 ValorString valor = new ValorString(
@@ -148,10 +154,8 @@ public class FiltroFactoryRSI implements IFiltroFactory {
                                                 valoresSeleccionados.get(EnumParametro.PERIODO_RSI), 2, 50)
                                 .ifPresent(errores::add);
 
-                this.objValidador
-                                .validarString(this.enumFiltro, EnumParametro.TIMEFRAME_RSI,
-                                                valoresSeleccionados.get(EnumParametro.TIMEFRAME_RSI),
-                                                EnumTimeframe.class)
+                this.objValidador.validarStringConOpciones(this.enumFiltro, EnumParametro.TIMEFRAME_RSI,
+                                valoresSeleccionados.get(EnumParametro.TIMEFRAME_RSI), TIMEFRAMES_SOPORTADOS)
                                 .ifPresent(errores::add);
 
                 return errores;

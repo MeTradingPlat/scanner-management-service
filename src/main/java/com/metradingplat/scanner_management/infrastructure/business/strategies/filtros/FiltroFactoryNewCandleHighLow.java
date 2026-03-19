@@ -100,9 +100,15 @@ public class FiltroFactoryNewCandleHighLow implements IFiltroFactory {
                                 EnumParametro.OPCION_EXTREMO_NEW_CANDLE.getEtiqueta(), valor, opciones);
         }
 
+        private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
+                EnumTimeframe._1M, EnumTimeframe._5M, EnumTimeframe._15M,
+                EnumTimeframe._30M, EnumTimeframe._1H);
+
         private Parametro crearParametroTimeframe(ValorString valorUsuario) {
                 EnumTipoValor enumTipoValor = EnumTipoValor.STRING;
-                List<Valor> opciones = this.obtenerOpciones(EnumTimeframe.values());
+                List<Valor> opciones = TIMEFRAMES_SOPORTADOS.stream()
+                                .map(e -> new ValorString(e.getEtiqueta(), enumTipoValor, e.getName()))
+                                .collect(Collectors.toList());
                 EnumTimeframe enumValor = valorUsuario != null ? EnumTimeframe.valueOf(valorUsuario.getValor())
                                 : EnumTimeframe._1M;
                 ValorString valor = new ValorString(
@@ -123,8 +129,8 @@ public class FiltroFactoryNewCandleHighLow implements IFiltroFactory {
                                 EnumOpcionExtremo.class)
                                 .ifPresent(errores::add);
 
-                this.objValidador.validarString(this.enumFiltro, EnumParametro.TIMEFRAME_NEW_CANDLE,
-                                valoresSeleccionados.get(EnumParametro.TIMEFRAME_NEW_CANDLE), EnumTimeframe.class)
+                this.objValidador.validarStringConOpciones(this.enumFiltro, EnumParametro.TIMEFRAME_NEW_CANDLE,
+                                valoresSeleccionados.get(EnumParametro.TIMEFRAME_NEW_CANDLE), TIMEFRAMES_SOPORTADOS)
                                 .ifPresent(errores::add);
 
                 return errores;

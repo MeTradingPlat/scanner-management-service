@@ -88,11 +88,17 @@ public class FiltroFactoryBearishBullishEngulfingCandle implements IFiltroFactor
                                 .collect(Collectors.toList());
         }
 
+        private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
+                EnumTimeframe._1M, EnumTimeframe._5M, EnumTimeframe._15M,
+                EnumTimeframe._30M, EnumTimeframe._1H);
+
         private Parametro crearParametroTimeframe(ValorString valorUsuario) {
                 EnumTipoValor enumTipoValor = EnumTipoValor.STRING;
-                List<Valor> opciones = this.obtenerOpciones(EnumTimeframe.values());
+                List<Valor> opciones = TIMEFRAMES_SOPORTADOS.stream()
+                                .map(e -> new ValorString(e.getEtiqueta(), enumTipoValor, e.getName()))
+                                .collect(Collectors.toList());
                 EnumTimeframe enumValor = valorUsuario != null ? EnumTimeframe.valueOf(valorUsuario.getValor())
-                                : EnumTimeframe._1D;
+                                : EnumTimeframe._5M;
                 ValorString valor = new ValorString(
                                 enumValor.getEtiqueta(),
                                 enumTipoValor,
@@ -120,10 +126,10 @@ public class FiltroFactoryBearishBullishEngulfingCandle implements IFiltroFactor
         public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
                 List<ResultadoValidacion> errores = new ArrayList<>();
 
-                this.objValidador.validarString(this.enumFiltro,
+                this.objValidador.validarStringConOpciones(this.enumFiltro,
                                 EnumParametro.TIMEFRAME_BEARISH_BULLISH_ENGULFING_CANDLE,
                                 valoresSeleccionados.get(EnumParametro.TIMEFRAME_BEARISH_BULLISH_ENGULFING_CANDLE),
-                                EnumTimeframe.class)
+                                TIMEFRAMES_SOPORTADOS)
                                 .ifPresent(errores::add);
 
                 this.objValidador.validarString(this.enumFiltro,

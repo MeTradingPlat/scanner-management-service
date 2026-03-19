@@ -125,9 +125,15 @@ public class FiltroFactoryConsecutiveCandles implements IFiltroFactory {
                                 EnumParametro.NUMERO_VELAS_CONSECUTIVAS.getEtiqueta(), valor, opciones);
         }
 
+        private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
+                EnumTimeframe._1M, EnumTimeframe._5M, EnumTimeframe._15M,
+                EnumTimeframe._30M, EnumTimeframe._1H);
+
         private Parametro crearParametroTimeframe(ValorString valorUsuario) {
                 EnumTipoValor enumTipoValor = EnumTipoValor.STRING;
-                List<Valor> opciones = this.obtenerOpciones(EnumTimeframe.values());
+                List<Valor> opciones = TIMEFRAMES_SOPORTADOS.stream()
+                                .map(e -> new ValorString(e.getEtiqueta(), enumTipoValor, e.getName()))
+                                .collect(Collectors.toList());
                 EnumTimeframe enumValor = valorUsuario != null ? EnumTimeframe.valueOf(valorUsuario.getValor())
                                 : EnumTimeframe._1M;
                 ValorString valor = new ValorString(
@@ -151,9 +157,9 @@ public class FiltroFactoryConsecutiveCandles implements IFiltroFactory {
                                 valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_CONSECUTIVAS), 2, 20)
                                 .ifPresent(errores::add);
 
-                this.objValidador.validarString(this.enumFiltro, EnumParametro.TIMEFRAME_CONSECUTIVE_CANDLES,
+                this.objValidador.validarStringConOpciones(this.enumFiltro, EnumParametro.TIMEFRAME_CONSECUTIVE_CANDLES,
                                 valoresSeleccionados.get(EnumParametro.TIMEFRAME_CONSECUTIVE_CANDLES),
-                                EnumTimeframe.class)
+                                TIMEFRAMES_SOPORTADOS)
                                 .ifPresent(errores::add);
 
                 return errores;

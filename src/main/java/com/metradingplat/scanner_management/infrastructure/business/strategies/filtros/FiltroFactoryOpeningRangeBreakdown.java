@@ -83,9 +83,15 @@ public class FiltroFactoryOpeningRangeBreakdown implements IFiltroFactory {
                 .collect(Collectors.toList());
     }
 
+    private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
+            EnumTimeframe._1M, EnumTimeframe._5M, EnumTimeframe._15M,
+            EnumTimeframe._30M, EnumTimeframe._1H);
+
     private Parametro crearParametroTimeframe(ValorString valorUsuario) {
         EnumTipoValor enumTipoValor = EnumTipoValor.STRING;
-        List<Valor> opciones = this.obtenerOpciones(EnumTimeframe.values());
+        List<Valor> opciones = TIMEFRAMES_SOPORTADOS.stream()
+                .map(e -> new ValorString(e.getEtiqueta(), enumTipoValor, e.getName()))
+                .collect(Collectors.toList());
         EnumTimeframe enumValor = valorUsuario != null ? EnumTimeframe.valueOf(valorUsuario.getValor())
                 : EnumTimeframe._5M;
         ValorString valor = new ValorString(
@@ -100,8 +106,8 @@ public class FiltroFactoryOpeningRangeBreakdown implements IFiltroFactory {
     public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
         List<ResultadoValidacion> errores = new ArrayList<>();
 
-        this.objValidador.validarString(this.enumFiltro, EnumParametro.TIMEFRAME_OPENING_RANGE_BREAKDOWN,
-                valoresSeleccionados.get(EnumParametro.TIMEFRAME_OPENING_RANGE_BREAKDOWN), EnumTimeframe.class)
+        this.objValidador.validarStringConOpciones(this.enumFiltro, EnumParametro.TIMEFRAME_OPENING_RANGE_BREAKDOWN,
+                valoresSeleccionados.get(EnumParametro.TIMEFRAME_OPENING_RANGE_BREAKDOWN), TIMEFRAMES_SOPORTADOS)
                 .ifPresent(errores::add);
 
         return errores;

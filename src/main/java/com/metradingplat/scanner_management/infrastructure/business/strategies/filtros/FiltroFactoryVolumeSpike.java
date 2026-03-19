@@ -121,9 +121,15 @@ public class FiltroFactoryVolumeSpike implements IFiltroFactory {
                                 EnumParametro.NUMERO_VELAS_VOLUME_SPIKE.getEtiqueta(), valor, opciones);
         }
 
+        private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
+                        EnumTimeframe._1M, EnumTimeframe._5M, EnumTimeframe._15M,
+                        EnumTimeframe._30M, EnumTimeframe._1H);
+
         private Parametro crearParametroTimeframe(ValorString valorUsuario) {
                 EnumTipoValor enumTipoValor = EnumTipoValor.STRING;
-                List<Valor> opciones = this.obtenerOpciones(EnumTimeframe.values());
+                List<Valor> opciones = TIMEFRAMES_SOPORTADOS.stream()
+                                .map(e -> new ValorString(e.getEtiqueta(), enumTipoValor, e.getName()))
+                                .collect(Collectors.toList());
                 EnumTimeframe enumValor = valorUsuario != null ? EnumTimeframe.valueOf(valorUsuario.getValor())
                                 : EnumTimeframe._5M;
                 ValorString valor = new ValorString(
@@ -159,14 +165,9 @@ public class FiltroFactoryVolumeSpike implements IFiltroFactory {
                                 valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_VOLUME_SPIKE), 5, 50)
                                 .ifPresent(errores::add);
 
-                List<EnumTimeframe> allowedTimeframesVolumeSpike = Arrays.asList(
-                                EnumTimeframe._2M, EnumTimeframe._3M, EnumTimeframe._5M, EnumTimeframe._10M,
-                                EnumTimeframe._15M, EnumTimeframe._30M, EnumTimeframe._45M, EnumTimeframe._1H,
-                                EnumTimeframe._2H, EnumTimeframe._3H, EnumTimeframe._4H, EnumTimeframe._12H,
-                                EnumTimeframe._1D);
                 this.objValidador.validarStringConOpciones(this.enumFiltro, EnumParametro.TIMEFRAME_VOLUME_SPIKE,
                                 valoresSeleccionados.get(EnumParametro.TIMEFRAME_VOLUME_SPIKE),
-                                allowedTimeframesVolumeSpike)
+                                TIMEFRAMES_SOPORTADOS)
                                 .ifPresent(errores::add);
 
                 this.objValidador.validarFloat(this.enumFiltro, EnumParametro.PROPORCION_VOLUMEN_VOLUME_SPIKE,
