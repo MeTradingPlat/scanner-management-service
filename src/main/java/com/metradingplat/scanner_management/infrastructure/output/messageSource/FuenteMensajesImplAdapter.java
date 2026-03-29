@@ -20,7 +20,6 @@ import com.metradingplat.scanner_management.infrastructure.input.controllerGesti
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarMercado.DTOAnswer.MercadoDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorCondicionalDTORespuesta;
-import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
 
 @Component
 @RequiredArgsConstructor

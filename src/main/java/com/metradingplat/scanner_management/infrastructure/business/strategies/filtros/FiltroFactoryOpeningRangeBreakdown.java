@@ -5,7 +5,6 @@ import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumParametro;
 import com.metradingplat.scanner_management.domain.enums.EnumTipoValor;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumTimeframe;
-import com.metradingplat.scanner_management.domain.enums.valores.IEnumValores;
 import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
@@ -75,12 +74,6 @@ public class FiltroFactoryOpeningRangeBreakdown implements IFiltroFactory {
 
         filtro.setParametros(parametros);
         return filtro;
-    }
-
-    private List<Valor> obtenerOpciones(IEnumValores[] enumValores) {
-        return Arrays.stream(enumValores)
-                .map(e -> new ValorString(e.getEtiqueta(), EnumTipoValor.STRING, e.getName()))
-                .collect(Collectors.toList());
     }
 
     private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
