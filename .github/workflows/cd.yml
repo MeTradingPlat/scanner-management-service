@@ -30,7 +30,6 @@ jobs:
               -e POSTGRES_DB="bd_scanners" \
               -e POSTGRES_USER="user_scanners" \
               -e POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}" \
-              -p 127.0.0.1:5433:5432 \
               -v postgres_scanners_data:/var/lib/postgresql/data \
               postgres:15-alpine
           else
@@ -64,7 +63,6 @@ jobs:
       - name: Run Application Container
         run: |
           docker run -d \
-            -p 127.0.0.1:8081:8081 \
             --name "scanner-management-service" \
             --network "metradingplat-network" \
             --restart "unless-stopped" \
