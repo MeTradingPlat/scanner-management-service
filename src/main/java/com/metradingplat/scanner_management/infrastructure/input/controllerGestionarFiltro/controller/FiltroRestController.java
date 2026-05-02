@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/escaner/filtro")
+@RequestMapping("/escaner/filtro")
 @RequiredArgsConstructor
 @Validated
 public class FiltroRestController {

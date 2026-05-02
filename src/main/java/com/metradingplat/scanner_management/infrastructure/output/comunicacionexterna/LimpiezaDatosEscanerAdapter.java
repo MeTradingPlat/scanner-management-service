@@ -31,7 +31,7 @@ public class LimpiezaDatosEscanerAdapter implements LimpiezaDatosEscanerIntPort 
 
     @Override
     public void eliminarLogsPorEscaner(Long idEscaner) {
-        String url = logServiceUrl + "/api/logs/escaner/" + idEscaner;
+        String url = logServiceUrl + "/logs/escaner/" + idEscaner;
         log.info("Eliminando logs del escaner {}: {}", idEscaner, url);
         try {
             restTemplate.exchange(url, HttpMethod.DELETE, requestConHeaderGateway(), Void.class);
@@ -43,7 +43,7 @@ public class LimpiezaDatosEscanerAdapter implements LimpiezaDatosEscanerIntPort 
 
     @Override
     public void eliminarActivosPorEscaner(Long idEscaner) {
-        String url = assetManagementServiceUrl + "/api/activos/escaner/" + idEscaner;
+        String url = assetManagementServiceUrl + "/activos/escaner/" + idEscaner;
         log.info("Eliminando activos del escaner {}: {}", idEscaner, url);
         try {
             restTemplate.exchange(url, HttpMethod.DELETE, requestConHeaderGateway(), Void.class);

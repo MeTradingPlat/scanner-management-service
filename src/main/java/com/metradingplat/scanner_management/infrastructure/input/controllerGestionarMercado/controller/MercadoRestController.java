@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/escaner/mercado")
+@RequestMapping("/escaner/mercado")
 @RequiredArgsConstructor
 @Validated
 public class MercadoRestController {

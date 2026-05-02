@@ -27,7 +27,7 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
 
     @Override
     public void notificarEscanerIniciado(Escaner escaner) {
-        String url = signalProcessingUrl + "/api/signal-processing/escaner";
+        String url = signalProcessingUrl + "/signal-processing/escaner";
         log.info("[SIGNAL-PROC-ADAPTER] Notificando escaner iniciado: id={}, nombre={}, url={}",
                 escaner.getIdEscaner(), escaner.getNombre(), url);
         try {
@@ -59,7 +59,7 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
 
     @Override
     public void notificarEscanerDetenido(Long idEscaner) {
-        String url = signalProcessingUrl + "/api/signal-processing/escaner/" + idEscaner + "/detener";
+        String url = signalProcessingUrl + "/signal-processing/escaner/" + idEscaner + "/detener";
         log.info("[SIGNAL-PROC-ADAPTER] Notificando escaner detenido: id={}, url={}", idEscaner, url);
         try {
             restTemplate.postForLocation(url, null);

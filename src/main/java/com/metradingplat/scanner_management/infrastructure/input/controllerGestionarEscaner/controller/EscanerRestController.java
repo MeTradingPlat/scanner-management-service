@@ -26,7 +26,7 @@ import com.metradingplat.scanner_management.infrastructure.input.controllerGesti
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarEscaner.mapper.EscanerMapperInfraestructuraDominio;
 
 @RestController
-@RequestMapping("/api/escaner")
+@RequestMapping("/escaner")
 @RequiredArgsConstructor
 @Validated
 public class EscanerRestController {
