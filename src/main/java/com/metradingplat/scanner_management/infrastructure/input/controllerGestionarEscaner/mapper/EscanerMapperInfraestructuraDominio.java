@@ -12,11 +12,13 @@ import com.metradingplat.scanner_management.infrastructure.input.controllerGesti
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarEscaner.DTOPetition.EscanerDTOPeticion;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarEscaner.DTOPetition.MercadoDTOPeticion;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarEscaner.DTOPetition.TipoEjecucionDTOPeticion;
+import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.mappers.FiltroMapperInfraestructuraDominio;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarMercado.DTOAnswer.MercadoDTORespuesta;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {FiltroMapperInfraestructuraDominio.class})
 public interface EscanerMapperInfraestructuraDominio {
 
     // --- Escaner ---

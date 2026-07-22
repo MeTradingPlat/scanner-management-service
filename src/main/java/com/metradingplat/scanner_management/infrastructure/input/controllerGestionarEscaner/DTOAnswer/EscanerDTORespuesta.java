@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.FiltroDtoRespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarMercado.DTOAnswer.MercadoDTORespuesta;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class EscanerDTORespuesta {
 
     private LocalDate fechaCreacion;
     private List<MercadoDTORespuesta> mercados;
+    private List<FiltroDtoRespuesta> filtros;
     private EstadoEscanerDTORespuesta objEstado;
     private TipoEjecucionDTORespuesta objTipoEjecucion;
 }
