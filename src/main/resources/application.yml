@@ -39,8 +39,6 @@ spring:
 logging:
   level:
     "[com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver]": WARN
-    "[org.hibernate.SQL]": DEBUG
-    "[org.hibernate.orm.jdbc.bind]": TRACE
 
 server:
   port: 8081
