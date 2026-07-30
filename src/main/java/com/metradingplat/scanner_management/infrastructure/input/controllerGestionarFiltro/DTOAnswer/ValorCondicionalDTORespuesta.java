@@ -20,6 +20,9 @@ public class ValorCondicionalDTORespuesta extends ValorDTORespuesta {
     public ValorCondicionalDTORespuesta(EnumTipoValor enumTipoValor, String etiqueta, EnumCondicional enumCondicional,
             Boolean isInteger, Number valor1, Number valor2) {
         super(etiqueta, enumTipoValor);
-
+        this.enumCondicional = enumCondicional;
+        this.isInteger = isInteger;
+        this.valor1 = valor1;
+        this.valor2 = valor2;
     }
 }
