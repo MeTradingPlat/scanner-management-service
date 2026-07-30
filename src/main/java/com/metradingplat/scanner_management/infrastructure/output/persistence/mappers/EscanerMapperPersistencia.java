@@ -12,7 +12,8 @@ import com.metradingplat.scanner_management.domain.models.EstadoEscaner;
 import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.EstadoEscanerEntity;
 import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.EscanerEntity;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = { FiltroMapperPersistencia.class })
 public interface EscanerMapperPersistencia {
 
     Escaner mappearDeEntityAEscaner(EscanerEntity entity);
