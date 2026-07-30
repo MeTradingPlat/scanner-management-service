@@ -1,5 +1,6 @@
 package com.metradingplat.scanner_management.infrastructure.input.controllerGestionarEscaner.controller;
 
+import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.ParametroEntity;
 import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.ValorCondicionalEntity;
 import com.metradingplat.scanner_management.infrastructure.output.persistence.entities.ValorEntity;
 import jakarta.persistence.EntityManager;
@@ -14,9 +15,7 @@ public class TempDiagController {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @GetMapping("/debug/valor/{id}")
-    public String debugValor(@PathVariable Long id) {
-        ValorEntity entity = entityManager.find(ValorEntity.class, id);
+    private String describe(ValorEntity entity) {
         if (entity == null) {
             return "null entity";
         }
@@ -30,5 +29,19 @@ public class TempDiagController {
             sb.append(" valor2=").append(vc.getValor2());
         }
         return sb.toString();
+    }
+
+    @GetMapping("/debug/valor/{id}")
+    public String debugValor(@PathVariable Long id) {
+        return describe(entityManager.find(ValorEntity.class, id));
+    }
+
+    @GetMapping("/debug/parametro/{id}")
+    public String debugParametro(@PathVariable Long id) {
+        ParametroEntity parametro = entityManager.find(ParametroEntity.class, id);
+        if (parametro == null) {
+            return "null parametro";
+        }
+        return "parametro.id_valor via association -> " + describe(parametro.getObjValorSeleccionado());
     }
 }
