@@ -53,6 +53,13 @@ import com.metradingplat.scanner_management.infrastructure.output.exceptionsCont
 @Service
 @Getter
 public class GestorFiltroFactory implements GestorEstrategiaFiltroIntPort {
+    // PIVOTS y NOTICIAS son conceptos que se van a rediseñar mas adelante
+    // (distintos de sus implementaciones actuales) -- ocultos del listado por
+    // categoria para que no aparezcan como opcion nueva en el frontend, pero
+    // la factoria sigue registrada (mapEnumFiltroIFiltroFactory) para que un
+    // escaner que ya los tenga guardados de antes siga funcionando.
+    private static final Set<EnumFiltro> OCULTOS_TEMPORALMENTE = Set.of(EnumFiltro.PIVOTS, EnumFiltro.NOTICIAS);
+
     private final Map<EnumFiltro, IFiltroFactory> mapEnumFiltroIFiltroFactory;
     private final Map<EnumCategoriaFiltro, List<EnumFiltro>> mapCategoriaFiltros;
 
@@ -65,6 +72,10 @@ public class GestorFiltroFactory implements GestorEstrategiaFiltroIntPort {
             EnumCategoriaFiltro categoria = filtro.obtenerEnumCategoria();
 
             this.mapEnumFiltroIFiltroFactory.put(enumFiltro, filtro);
+
+            if (OCULTOS_TEMPORALMENTE.contains(enumFiltro)) {
+                continue;
+            }
 
             this.mapCategoriaFiltros
                     .computeIfAbsent(categoria, k -> new ArrayList<>())
