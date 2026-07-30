@@ -20,9 +20,6 @@ public class LimpiezaDatosEscanerAdapter implements LimpiezaDatosEscanerIntPort 
     @Value("${service.log.url:http://log-service:8084}")
     private String logServiceUrl;
 
-    @Value("${service.asset-management.url:http://asset-management-service:8083}")
-    private String assetManagementServiceUrl;
-
     private HttpEntity<Void> requestConHeaderGateway() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Gateway-Passed", "true");
@@ -38,18 +35,6 @@ public class LimpiezaDatosEscanerAdapter implements LimpiezaDatosEscanerIntPort 
             log.info("Logs del escaner {} eliminados correctamente", idEscaner);
         } catch (Exception e) {
             log.error("Error eliminando logs del escaner {}: {}", idEscaner, e.getMessage());
-        }
-    }
-
-    @Override
-    public void eliminarActivosPorEscaner(Long idEscaner) {
-        String url = assetManagementServiceUrl + "/activos/escaner/" + idEscaner;
-        log.info("Eliminando activos del escaner {}: {}", idEscaner, url);
-        try {
-            restTemplate.exchange(url, HttpMethod.DELETE, requestConHeaderGateway(), Void.class);
-            log.info("Activos del escaner {} eliminados correctamente", idEscaner);
-        } catch (Exception e) {
-            log.error("Error eliminando activos del escaner {}: {}", idEscaner, e.getMessage());
         }
     }
 }

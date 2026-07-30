@@ -90,7 +90,6 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
         validarEstadoPermiteEliminacion(idEscaner);
         // Limpiar datos relacionados en otros servicios antes de eliminar
         this.objLimpiezaDatosEscaner.eliminarLogsPorEscaner(idEscaner);
-        this.objLimpiezaDatosEscaner.eliminarActivosPorEscaner(idEscaner);
         Boolean respuesta = this.objGestionarEscanerGatewayIntPort.eliminarEscaner(idEscaner);
         return respuesta;
     }
