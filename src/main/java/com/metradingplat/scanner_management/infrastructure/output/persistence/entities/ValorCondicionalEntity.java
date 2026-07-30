@@ -1,6 +1,7 @@
 package com.metradingplat.scanner_management.infrastructure.output.persistence.entities;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +16,7 @@ import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional
 @Entity
 @Table(name = "valor_condicional")
 @PrimaryKeyJoinColumn(name = "id_valor")
+@DiscriminatorValue("CONDICIONAL")
 @Getter
 @Setter
 @NoArgsConstructor

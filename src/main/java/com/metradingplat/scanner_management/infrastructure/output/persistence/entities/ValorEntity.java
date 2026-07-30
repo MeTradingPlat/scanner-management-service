@@ -9,6 +9,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "valor")
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "enum_tipo_valor", discriminatorType = DiscriminatorType.STRING)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,6 +25,13 @@ public abstract class ValorEntity {
     @JoinColumn(name = "id_parametro")
     private ParametroEntity objParametro;
 
-    @Column(name = "enum_tipo_valor")
+    // Sin columna discriminadora explicita, la asociacion polimorfica EAGER
+    // objValorSeleccionado (ParametroEntity) resolvia el "case when x is not
+    // null" de Hibernate pero no siempre hidrataba los campos propios de la
+    // subclase (valor/valor1/valor2/enumCondicional siempre null en la
+    // respuesta REST pese a estar bien guardados en la BD) -- confirmado en
+    // vivo via logs SQL. El campo queda de solo lectura porque la columna ya
+    // la gestiona el discriminador.
+    @Column(name = "enum_tipo_valor", insertable = false, updatable = false)
     private String enumTipoValor;
 }
