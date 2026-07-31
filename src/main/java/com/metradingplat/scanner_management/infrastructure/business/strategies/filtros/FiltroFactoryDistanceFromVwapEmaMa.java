@@ -158,9 +158,14 @@ public class FiltroFactoryDistanceFromVwapEmaMa implements IFiltroFactory {
         public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
                 List<ResultadoValidacion> errores = new ArrayList<>();
 
+                // -100/100 alcanzaba mientras MODO_DISTANCIA_DISTANCE_FROM_VWAP_EMA_MA
+                // estaba huerfano y compute_value() siempre devolvia %. Ahora que se
+                // respeta (PRECIO es el default), el valor puede ser una distancia en
+                // dolares -- un rango mas amplio evita rechazar configuraciones validas
+                // en simbolos de precio alto.
                 this.objValidador
                                 .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
-                                                valoresSeleccionados.get(EnumParametro.CONDICION), -100.0F, 100.0F)
+                                                valoresSeleccionados.get(EnumParametro.CONDICION), -100000.0F, 100000.0F)
                                 .ifPresent(errores::add);
 
                 this.objValidador.validarString(this.enumFiltro,
