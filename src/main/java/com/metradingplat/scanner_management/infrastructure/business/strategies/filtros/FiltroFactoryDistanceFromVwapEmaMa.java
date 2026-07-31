@@ -35,7 +35,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FiltroFactoryDistanceFromVwapEmaMa implements IFiltroFactory {
         private final EnumFiltro enumFiltro = EnumFiltro.DISTANCE_FROM_VWAP;
-        private final EnumCategoriaFiltro enumCategoria = EnumCategoriaFiltro.PRECIO_Y_MOVIMIENTO;
+        // MOMENTUM_E_INDICADORES_TECNICOS, no PRECIO_Y_MOVIMIENTO: ver FiltroFactoryPercentageChange.
+        private final EnumCategoriaFiltro enumCategoria = EnumCategoriaFiltro.MOMENTUM_E_INDICADORES_TECNICOS;
         private final ValidadorParametroFiltro objValidador;
 
         @Override

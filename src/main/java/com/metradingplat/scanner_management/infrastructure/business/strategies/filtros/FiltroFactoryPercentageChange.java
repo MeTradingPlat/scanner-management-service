@@ -33,7 +33,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FiltroFactoryPercentageChange implements IFiltroFactory {
         private final EnumFiltro enumFiltro = EnumFiltro.PERCENTAGE_CHANGE;
-        private final EnumCategoriaFiltro enumCategoria = EnumCategoriaFiltro.PRECIO_Y_MOVIMIENTO;
+        // MOMENTUM_E_INDICADORES_TECNICOS, no PRECIO_Y_MOVIMIENTO: signal-processing-service
+        // solo pasa velas reales a los filtros de esta categoria (compute_value necesita
+        // data.candles, que la etapa de "precio y movimiento" nunca provee -- confirmado en
+        // vivo, dejaba a 0 todos los escaneres que usaban este filtro).
+        private final EnumCategoriaFiltro enumCategoria = EnumCategoriaFiltro.MOMENTUM_E_INDICADORES_TECNICOS;
         private final ValidadorParametroFiltro objValidador;
 
         @Override

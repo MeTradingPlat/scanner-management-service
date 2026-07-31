@@ -40,7 +40,8 @@ import java.util.stream.Collectors;
 public class FiltroFactoryCrossingAboveBelow implements IFiltroFactory {
 
     private final EnumFiltro enumFiltro = EnumFiltro.CROSSING_ABOVE_BELOW;
-    private final EnumCategoriaFiltro enumCategoria = EnumCategoriaFiltro.PRECIO_Y_MOVIMIENTO;
+    // MOMENTUM_E_INDICADORES_TECNICOS, no PRECIO_Y_MOVIMIENTO: ver FiltroFactoryPercentageChange.
+    private final EnumCategoriaFiltro enumCategoria = EnumCategoriaFiltro.MOMENTUM_E_INDICADORES_TECNICOS;
     private final ValidadorParametroFiltro objValidador;
 
     @Override

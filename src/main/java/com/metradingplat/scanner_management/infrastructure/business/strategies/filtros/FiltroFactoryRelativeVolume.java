@@ -33,7 +33,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FiltroFactoryRelativeVolume implements IFiltroFactory {
         private final EnumFiltro enumFiltro = EnumFiltro.RELATIVE_VOLUME;
-        private final EnumCategoriaFiltro enumCategoria = EnumCategoriaFiltro.VOLUMEN;
+        // MOMENTUM_E_INDICADORES_TECNICOS, no VOLUMEN: ver FiltroFactoryPercentageChange.
+        private final EnumCategoriaFiltro enumCategoria = EnumCategoriaFiltro.MOMENTUM_E_INDICADORES_TECNICOS;
         private final ValidadorParametroFiltro objValidador;
 
         @Override
