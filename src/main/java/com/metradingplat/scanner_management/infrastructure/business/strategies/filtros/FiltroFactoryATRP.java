@@ -13,7 +13,6 @@ import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
-import com.metradingplat.scanner_management.domain.models.ValorFloat;
 import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
@@ -86,8 +85,6 @@ public class FiltroFactoryATRP implements IFiltroFactory {
                                                 .get(EnumParametro.PERIODO_ATR_ATRP)));
                 parametros.add(this.crearParametroTipoPromedioMovil(
                                 (ValorString) valoresSeleccionados.get(EnumParametro.TIPO_PROMEDIO_MOVIL_ATRP)));
-                parametros.add(this.crearParametroValorPromedioMovil(
-                                (ValorFloat) valoresSeleccionados.get(EnumParametro.VALOR_PROMEDIO_MOVIL_ATRP)));
 
                 filtro.setParametros(parametros);
                 return filtro;
@@ -162,17 +159,6 @@ public class FiltroFactoryATRP implements IFiltroFactory {
                                 EnumParametro.TIPO_PROMEDIO_MOVIL_ATRP.getEtiqueta(), valor, opciones);
         }
 
-        private Parametro crearParametroValorPromedioMovil(ValorFloat valorUsuario) {
-                EnumTipoValor enumTipoValor = EnumTipoValor.FLOAT;
-                List<Valor> opciones = this.obtenerOpciones(new IEnumValores[0]);
-                ValorFloat valor = new ValorFloat(
-                                "etiqueta.vacia",
-                                enumTipoValor,
-                                valorUsuario != null ? valorUsuario.getValor() : 0F);
-                return new Parametro(EnumParametro.VALOR_PROMEDIO_MOVIL_ATRP,
-                                EnumParametro.VALOR_PROMEDIO_MOVIL_ATRP.getEtiqueta(), valor, opciones);
-        }
-
         @Override
         public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
                 List<ResultadoValidacion> errores = new ArrayList<>();
@@ -195,11 +181,6 @@ public class FiltroFactoryATRP implements IFiltroFactory {
                 this.objValidador.validarString(this.enumFiltro, EnumParametro.TIPO_PROMEDIO_MOVIL_ATRP,
                                 valoresSeleccionados.get(EnumParametro.TIPO_PROMEDIO_MOVIL_ATRP),
                                 EnumModoPromedioMovil.class)
-                                .ifPresent(errores::add);
-
-                this.objValidador.validarFloat(this.enumFiltro, EnumParametro.VALOR_PROMEDIO_MOVIL_ATRP,
-                                valoresSeleccionados.get(EnumParametro.VALOR_PROMEDIO_MOVIL_ATRP), 0.0f,
-                                Float.MAX_VALUE)
                                 .ifPresent(errores::add);
 
                 return errores;
