@@ -5,11 +5,13 @@ import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumParametro;
 import com.metradingplat.scanner_management.domain.enums.EnumTipoValor;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicionFirstCandle;
+import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
 import com.metradingplat.scanner_management.domain.enums.valores.IEnumValores;
 import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
+import com.metradingplat.scanner_management.domain.models.ValorCondicional;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -72,6 +74,10 @@ public class FiltroFactoryFirstCandle implements IFiltroFactory {
         List<Parametro> parametros = new ArrayList<>();
         parametros.add(this
                 .crearParametroTipoVela((ValorString) valoresSeleccionados.get(EnumParametro.TIPO_VELA_FIRTS_CANDLE)));
+        // Sin esto el filtro pasaba incondicionalmente con cualquier vela de
+        // apertura (alcista o bajista), sin importar TIPO_VELA_FIRTS_CANDLE.
+        parametros.add(crearParametroCondicion(
+                (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
 
         filtro.setParametros(parametros);
         return filtro;
@@ -97,12 +103,34 @@ public class FiltroFactoryFirstCandle implements IFiltroFactory {
                 valor, opciones);
     }
 
+    private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+        EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
+        List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
+        EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
+                : EnumCondicional.IGUAL_A;
+        ValorCondicional valor = new ValorCondicional(
+                enumCondicional.getEtiqueta(),
+                enumTipoValor,
+                enumCondicional,
+                valorUsuario != null && valorUsuario.getIsInteger() != null
+                        ? valorUsuario.getIsInteger()
+                        : false,
+                valorUsuario != null ? valorUsuario.getValor1() : 1F,
+                valorUsuario != null ? valorUsuario.getValor2() : 1F);
+        return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
+    }
+
     @Override
     public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
         List<ResultadoValidacion> errores = new ArrayList<>();
 
         this.objValidador.validarString(this.enumFiltro, EnumParametro.TIPO_VELA_FIRTS_CANDLE,
                 valoresSeleccionados.get(EnumParametro.TIPO_VELA_FIRTS_CANDLE), EnumCondicionFirstCandle.class)
+                .ifPresent(errores::add);
+
+        this.objValidador
+                .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
+                        valoresSeleccionados.get(EnumParametro.CONDICION), -1.0F, 1.0F)
                 .ifPresent(errores::add);
 
         return errores;

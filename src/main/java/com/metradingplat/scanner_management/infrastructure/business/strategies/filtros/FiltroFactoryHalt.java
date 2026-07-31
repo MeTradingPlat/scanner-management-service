@@ -3,18 +3,26 @@ package com.metradingplat.scanner_management.infrastructure.business.strategies.
 import com.metradingplat.scanner_management.domain.enums.EnumCategoriaFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumParametro;
+import com.metradingplat.scanner_management.domain.enums.EnumTipoValor;
+import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
+import com.metradingplat.scanner_management.domain.enums.valores.IEnumValores;
 import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
+import com.metradingplat.scanner_management.domain.models.ValorCondicional;
+import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
 import com.metradingplat.scanner_management.infrastructure.business.validation.ResultadoValidacion;
+import com.metradingplat.scanner_management.infrastructure.business.validation.ValidadorParametroFiltro;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +33,7 @@ import org.springframework.stereotype.Component;
 public class FiltroFactoryHalt implements IFiltroFactory {
     private final EnumFiltro enumFiltro = EnumFiltro.HALT;
     private final EnumCategoriaFiltro enumCategoria = EnumCategoriaFiltro.TIEMPO_Y_PATRONES_DE_PRECIO;
+    private final ValidadorParametroFiltro objValidador;
 
     @Override
     public EnumFiltro obtenerEnumFiltro() {
@@ -61,16 +70,49 @@ public class FiltroFactoryHalt implements IFiltroFactory {
     public Filtro obtenerFiltro(Map<EnumParametro, Valor> valoresSeleccionados) {
         Filtro filtro = this.obtenerInformacionFiltro();
 
+        // Sin ningun parametro (ni siquiera CONDICION), este filtro pasaba
+        // incondicionalmente para cualquier simbolo con datos -- HaltStrategy
+        // siempre devuelve 0.0/1.0, nunca None, y evaluate_condition() sin
+        // CONDICION configurado retorna True de forma incondicional.
         List<Parametro> parametros = new ArrayList<>();
+        parametros.add(crearParametroCondicion(
+                (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
 
         filtro.setParametros(parametros);
         return filtro;
     }
 
+    private List<Valor> obtenerOpciones(IEnumValores[] enumValores) {
+        return Arrays.stream(enumValores)
+                .map(e -> new ValorString(e.getEtiqueta(), EnumTipoValor.STRING, e.getName()))
+                .collect(Collectors.toList());
+    }
+
+    private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+        EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
+        List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
+        EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
+                : EnumCondicional.MAYOR_QUE;
+        ValorCondicional valor = new ValorCondicional(
+                enumCondicional.getEtiqueta(),
+                enumTipoValor,
+                enumCondicional,
+                valorUsuario != null && valorUsuario.getIsInteger() != null
+                        ? valorUsuario.getIsInteger()
+                        : false,
+                valorUsuario != null ? valorUsuario.getValor1() : 0F,
+                valorUsuario != null ? valorUsuario.getValor2() : 1F);
+        return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
+    }
+
     @Override
     public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
         List<ResultadoValidacion> errores = new ArrayList<>();
-        // String baseEtiqueta = "estrategia.filtro.halt.parametro.";
+
+        this.objValidador
+                .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
+                        valoresSeleccionados.get(EnumParametro.CONDICION), 0.0F, 1.0F)
+                .ifPresent(errores::add);
 
         return errores;
     }

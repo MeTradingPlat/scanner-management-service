@@ -4,12 +4,14 @@ import com.metradingplat.scanner_management.domain.enums.EnumCategoriaFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumParametro;
 import com.metradingplat.scanner_management.domain.enums.EnumTipoValor;
+import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumNivelCruce;
 import com.metradingplat.scanner_management.domain.enums.valores.IEnumValores;
 import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
+import com.metradingplat.scanner_management.domain.models.ValorCondicional;
 import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -81,6 +83,13 @@ public class FiltroFactoryCrossingAboveBelow implements IFiltroFactory {
                 (ValorString) valoresSeleccionados.get(EnumParametro.NIVEL_CRUCE_CROSSING_ABOVE_BELOW)));
         parametros.add(this.crearParametroPeriodoEma(
                 (ValorInteger) valoresSeleccionados.get(EnumParametro.PERIODO_EMA_CROSSING_ABOVE_BELOW)));
+        // Sin esto el filtro pasaba incondicionalmente con cualquier simbolo
+        // con >= 2 velas, sin importar si de verdad cruzo el nivel esta vela
+        // (compute_value devuelve 0.0 si no, o el % con signo si si -- FUERA
+        // de una banda casi-cero captura "si hubo cruce" en cualquier
+        // direccion).
+        parametros.add(crearParametroCondicion(
+                (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
 
         filtro.setParametros(parametros);
         return filtro;
@@ -89,6 +98,11 @@ public class FiltroFactoryCrossingAboveBelow implements IFiltroFactory {
     @Override
     public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
         List<ResultadoValidacion> errores = new ArrayList<>();
+
+        this.objValidador
+                .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
+                        valoresSeleccionados.get(EnumParametro.CONDICION), -100.0F, 100.0F)
+                .ifPresent(errores::add);
 
         this.objValidador.validarString(
                 this.enumFiltro,
@@ -148,5 +162,22 @@ public class FiltroFactoryCrossingAboveBelow implements IFiltroFactory {
                 EnumParametro.PERIODO_EMA_CROSSING_ABOVE_BELOW.getEtiqueta(),
                 valor,
                 opciones);
+    }
+
+    private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+        EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
+        List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
+        EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
+                : EnumCondicional.FUERA;
+        ValorCondicional valor = new ValorCondicional(
+                enumCondicional.getEtiqueta(),
+                enumTipoValor,
+                enumCondicional,
+                valorUsuario != null && valorUsuario.getIsInteger() != null
+                        ? valorUsuario.getIsInteger()
+                        : false,
+                valorUsuario != null ? valorUsuario.getValor1() : -0.001F,
+                valorUsuario != null ? valorUsuario.getValor2() : 0.001F);
+        return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }
 }

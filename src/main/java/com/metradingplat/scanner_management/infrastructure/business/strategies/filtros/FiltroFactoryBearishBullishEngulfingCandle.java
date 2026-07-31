@@ -4,6 +4,7 @@ import com.metradingplat.scanner_management.domain.enums.EnumCategoriaFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumParametro;
 import com.metradingplat.scanner_management.domain.enums.EnumTipoValor;
+import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumTimeframe;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumTipoPatron;
 import com.metradingplat.scanner_management.domain.enums.valores.IEnumValores;
@@ -11,6 +12,7 @@ import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
+import com.metradingplat.scanner_management.domain.models.ValorCondicional;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -77,6 +79,12 @@ public class FiltroFactoryBearishBullishEngulfingCandle implements IFiltroFactor
                 parametros.add(this.crearParametroTipoPatron(
                                 (ValorString) valoresSeleccionados
                                                 .get(EnumParametro.TIPO_PATRON_BEARISH_BULLISH_ENGULFING_CANDLE)));
+                // Sin esto el filtro pasaba incondicionalmente para cualquier
+                // simbolo con >= 2 velas, sin importar si el patron elegido en
+                // TIPO_PATRON realmente aparecio (compute_value ya distingue
+                // 1.0=coincide / -1.0=patron opuesto / 0.0=ninguno).
+                parametros.add(crearParametroCondicion(
+                                (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
 
                 filtro.setParametros(parametros);
                 return filtro;
@@ -122,9 +130,31 @@ public class FiltroFactoryBearishBullishEngulfingCandle implements IFiltroFactor
                                 opciones);
         }
 
+        private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+                EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
+                List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
+                EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
+                                : EnumCondicional.IGUAL_A;
+                ValorCondicional valor = new ValorCondicional(
+                                enumCondicional.getEtiqueta(),
+                                enumTipoValor,
+                                enumCondicional,
+                                valorUsuario != null && valorUsuario.getIsInteger() != null
+                                                ? valorUsuario.getIsInteger()
+                                                : false,
+                                valorUsuario != null ? valorUsuario.getValor1() : 1F,
+                                valorUsuario != null ? valorUsuario.getValor2() : 1F);
+                return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
+        }
+
         @Override
         public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
                 List<ResultadoValidacion> errores = new ArrayList<>();
+
+                this.objValidador
+                                .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
+                                                valoresSeleccionados.get(EnumParametro.CONDICION), -1.0F, 1.0F)
+                                .ifPresent(errores::add);
 
                 this.objValidador.validarStringConOpciones(this.enumFiltro,
                                 EnumParametro.TIMEFRAME_BEARISH_BULLISH_ENGULFING_CANDLE,

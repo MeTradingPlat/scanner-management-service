@@ -4,6 +4,7 @@ import com.metradingplat.scanner_management.domain.enums.EnumCategoriaFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumParametro;
 import com.metradingplat.scanner_management.domain.enums.EnumTipoValor;
+import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumDireccionRompimiento;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumLineaCruce;
 import com.metradingplat.scanner_management.domain.enums.valores.IEnumValores;
@@ -11,6 +12,7 @@ import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
+import com.metradingplat.scanner_management.domain.models.ValorCondicional;
 import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
@@ -79,6 +81,13 @@ public class FiltroFactoryThroughEmaVwapAlert implements IFiltroFactory {
                 parametros.add(this.crearParametroDireccionRompimiento(
                                 (ValorString) valoresSeleccionados
                                                 .get(EnumParametro.THROUGH_EMA_VWAP_DIRECCION_ROMPIMIENTO)));
+                // Sin esto el filtro pasaba incondicionalmente con cualquier
+                // simbolo con >= 2 velas, sin importar si de verdad cruzo la
+                // linea esta vela (compute_value devuelve 0.0 si no hubo cruce,
+                // o el % con signo si lo hubo -- FUERA de una banda casi-cero
+                // captura "hubo cruce" en cualquier direccion).
+                parametros.add(crearParametroCondicion(
+                                (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
 
                 filtro.setParametros(parametros);
                 return filtro;
@@ -128,9 +137,31 @@ public class FiltroFactoryThroughEmaVwapAlert implements IFiltroFactory {
                                 EnumParametro.THROUGH_EMA_VWAP_DIRECCION_ROMPIMIENTO.getEtiqueta(), valor, opciones);
         }
 
+        private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+                EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
+                List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
+                EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
+                                : EnumCondicional.FUERA;
+                ValorCondicional valor = new ValorCondicional(
+                                enumCondicional.getEtiqueta(),
+                                enumTipoValor,
+                                enumCondicional,
+                                valorUsuario != null && valorUsuario.getIsInteger() != null
+                                                ? valorUsuario.getIsInteger()
+                                                : false,
+                                valorUsuario != null ? valorUsuario.getValor1() : -0.001F,
+                                valorUsuario != null ? valorUsuario.getValor2() : 0.001F);
+                return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
+        }
+
         @Override
         public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
                 List<ResultadoValidacion> errores = new ArrayList<>();
+
+                this.objValidador
+                                .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
+                                                valoresSeleccionados.get(EnumParametro.CONDICION), -100.0F, 100.0F)
+                                .ifPresent(errores::add);
 
                 Valor lineaCruceValor = valoresSeleccionados.get(EnumParametro.THROUGH_EMA_VWAP_LINEA_CRUCE);
                 this.objValidador

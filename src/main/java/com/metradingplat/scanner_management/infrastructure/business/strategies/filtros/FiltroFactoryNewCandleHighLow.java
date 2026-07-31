@@ -4,6 +4,7 @@ import com.metradingplat.scanner_management.domain.enums.EnumCategoriaFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumParametro;
 import com.metradingplat.scanner_management.domain.enums.EnumTipoValor;
+import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumOpcionExtremo;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumTimeframe;
 import com.metradingplat.scanner_management.domain.enums.valores.IEnumValores;
@@ -11,6 +12,7 @@ import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
+import com.metradingplat.scanner_management.domain.models.ValorCondicional;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -76,6 +78,11 @@ public class FiltroFactoryNewCandleHighLow implements IFiltroFactory {
                 parametros.add(this
                                 .crearParametroTimeframe((ValorString) valoresSeleccionados
                                                 .get(EnumParametro.TIMEFRAME_NEW_CANDLE)));
+                // Sin esto el filtro pasaba incondicionalmente con cualquier
+                // simbolo con >= 2 velas, sin importar si de verdad hizo un
+                // nuevo maximo/minimo (compute_value ya devuelve 0.0/1.0).
+                parametros.add(crearParametroCondicion(
+                                (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
 
                 filtro.setParametros(parametros);
                 return filtro;
@@ -120,9 +127,31 @@ public class FiltroFactoryNewCandleHighLow implements IFiltroFactory {
                                 valor, opciones);
         }
 
+        private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+                EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
+                List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
+                EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
+                                : EnumCondicional.MAYOR_QUE;
+                ValorCondicional valor = new ValorCondicional(
+                                enumCondicional.getEtiqueta(),
+                                enumTipoValor,
+                                enumCondicional,
+                                valorUsuario != null && valorUsuario.getIsInteger() != null
+                                                ? valorUsuario.getIsInteger()
+                                                : false,
+                                valorUsuario != null ? valorUsuario.getValor1() : 0F,
+                                valorUsuario != null ? valorUsuario.getValor2() : 1F);
+                return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
+        }
+
         @Override
         public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
                 List<ResultadoValidacion> errores = new ArrayList<>();
+
+                this.objValidador
+                                .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
+                                                valoresSeleccionados.get(EnumParametro.CONDICION), 0.0F, 1.0F)
+                                .ifPresent(errores::add);
 
                 this.objValidador.validarString(this.enumFiltro, EnumParametro.OPCION_EXTREMO_NEW_CANDLE,
                                 valoresSeleccionados.get(EnumParametro.OPCION_EXTREMO_NEW_CANDLE),
