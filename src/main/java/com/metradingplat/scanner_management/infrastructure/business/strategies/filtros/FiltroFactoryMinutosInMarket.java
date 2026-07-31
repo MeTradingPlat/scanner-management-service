@@ -11,7 +11,6 @@ import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
-import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -74,8 +73,6 @@ public class FiltroFactoryMinutosInMarket implements IFiltroFactory {
         List<Parametro> parametros = new ArrayList<>();
         parametros.add(
                 this.crearParametroCondicion((ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
-        parametros.add(this.crearParametroMinutosTranscurridos(
-                (ValorInteger) valoresSeleccionados.get(EnumParametro.MINUTOS_TRANSCURRIDOS)));
 
         filtro.setParametros(parametros);
         return filtro;
@@ -88,6 +85,9 @@ public class FiltroFactoryMinutosInMarket implements IFiltroFactory {
     }
 
     private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+        // MinutosInMarketStrategy devuelve directo los minutos transcurridos
+        // desde la apertura -- CONDICION (ej. MAYOR_QUE 30) ES el umbral real,
+        // no un parametro aparte.
         EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
         List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
         EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
@@ -96,25 +96,10 @@ public class FiltroFactoryMinutosInMarket implements IFiltroFactory {
                 enumCondicional.getEtiqueta(),
                 enumTipoValor,
                 enumCondicional,
-                valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : false, // isInteger
-                                                                                                                   // =
-                                                                                                                   // true
-                                                                                                                   // (minutos
-                                                                                                                   // transcurridos)
+                valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : false,
                 valorUsuario != null ? valorUsuario.getValor1() : 30,
                 valorUsuario != null ? valorUsuario.getValor2() : 240);
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
-    }
-
-    private Parametro crearParametroMinutosTranscurridos(ValorInteger valorUsuario) {
-        EnumTipoValor enumTipoValor = EnumTipoValor.INTEGER;
-        List<Valor> opciones = this.obtenerOpciones(new IEnumValores[0]);
-        ValorInteger valor = new ValorInteger(
-                "etiqueta.vacia",
-                enumTipoValor,
-                valorUsuario != null ? valorUsuario.getValor() : 30);
-        return new Parametro(EnumParametro.MINUTOS_TRANSCURRIDOS, EnumParametro.MINUTOS_TRANSCURRIDOS.getEtiqueta(),
-                valor, opciones);
     }
 
     @Override
@@ -124,10 +109,6 @@ public class FiltroFactoryMinutosInMarket implements IFiltroFactory {
         this.objValidador
                 .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
                         valoresSeleccionados.get(EnumParametro.CONDICION), 1.0F, 390.0F)
-                .ifPresent(errores::add);
-
-        this.objValidador.validarInteger(this.enumFiltro, EnumParametro.MINUTOS_TRANSCURRIDOS,
-                valoresSeleccionados.get(EnumParametro.MINUTOS_TRANSCURRIDOS), 1, 390)
                 .ifPresent(errores::add);
 
         return errores;

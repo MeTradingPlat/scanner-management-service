@@ -92,25 +92,26 @@ public class FiltroFactoryConsecutiveCandles implements IFiltroFactory {
         }
 
         private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+                // compute_value() solo devuelve -1.0 (racha bajista) / 0.0 (ninguna) /
+                // 1.0 (racha alcista) -- no hay un selector de direccion aparte como en
+                // BEARISH_BULLISH_ENGULFING, asi que CONDICION es el mecanismo real
+                // para elegir: IGUAL_A 1 = alcista, IGUAL_A -1 = bajista. El default
+                // anterior (MAYOR_QUE 3) nunca podia ser verdadero contra ese rango --
+                // el filtro no fallaba, pero jamas hacia match con su configuracion
+                // de fabrica.
                 EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
                 List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
                 EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
-                                : EnumCondicional.MAYOR_QUE;
+                                : EnumCondicional.IGUAL_A;
                 ValorCondicional valor = new ValorCondicional(
                                 enumCondicional.getEtiqueta(),
                                 enumTipoValor,
                                 enumCondicional,
                                 valorUsuario != null && valorUsuario.getIsInteger() != null
                                                 ? valorUsuario.getIsInteger()
-                                                : false, // isInteger
-                                                         // =
-                                                         // true
-                                                         // (número
-                                                         // de
-                                                         // velas
-                                                         // consecutivas)
-                                valorUsuario != null ? valorUsuario.getValor1() : 3,
-                                valorUsuario != null ? valorUsuario.getValor2() : 8);
+                                                : false,
+                                valorUsuario != null ? valorUsuario.getValor1() : 1F,
+                                valorUsuario != null ? valorUsuario.getValor2() : 1F);
                 return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
         }
 
@@ -150,7 +151,7 @@ public class FiltroFactoryConsecutiveCandles implements IFiltroFactory {
 
                 this.objValidador
                                 .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
-                                                valoresSeleccionados.get(EnumParametro.CONDICION), -20.0F, 20.0F)
+                                                valoresSeleccionados.get(EnumParametro.CONDICION), -1.0F, 1.0F)
                                 .ifPresent(errores::add);
 
                 this.objValidador.validarInteger(this.enumFiltro, EnumParametro.NUMERO_VELAS_CONSECUTIVAS,

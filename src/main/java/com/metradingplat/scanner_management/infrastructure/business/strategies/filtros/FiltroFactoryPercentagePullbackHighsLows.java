@@ -12,7 +12,6 @@ import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
-import com.metradingplat.scanner_management.domain.models.ValorFloat;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -78,8 +77,6 @@ public class FiltroFactoryPercentagePullbackHighsLows implements IFiltroFactory 
                                                 (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
                 parametros.add(this.crearParametroPuntoReferencia(
                                 (ValorString) valoresSeleccionados.get(EnumParametro.PUNTO_REFERENCIA_PULLBACK)));
-                parametros.add(this.crearParametroPorcentajeRetroceso(
-                                (ValorFloat) valoresSeleccionados.get(EnumParametro.PORCENTAJE_RETROCESO_PULLBACK)));
 
                 filtro.setParametros(parametros);
                 return filtro;
@@ -92,6 +89,9 @@ public class FiltroFactoryPercentagePullbackHighsLows implements IFiltroFactory 
         }
 
         private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+                // PercentagePullbackHighsLowsStrategy devuelve directo el % de
+                // retroceso -- CONDICION (ej. MAYOR_QUE 10) ES el umbral real, no un
+                // parametro aparte.
                 EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
                 List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
                 EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
@@ -122,17 +122,6 @@ public class FiltroFactoryPercentagePullbackHighsLows implements IFiltroFactory 
                                 EnumParametro.PUNTO_REFERENCIA_PULLBACK.getEtiqueta(), valor, opciones);
         }
 
-        private Parametro crearParametroPorcentajeRetroceso(ValorFloat valorUsuario) {
-                EnumTipoValor enumTipoValor = EnumTipoValor.FLOAT;
-                List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
-                ValorFloat valor = new ValorFloat(
-                                "etiqueta.vacia",
-                                enumTipoValor,
-                                valorUsuario != null ? valorUsuario.getValor() : 5.0F);
-                return new Parametro(EnumParametro.PORCENTAJE_RETROCESO_PULLBACK,
-                                EnumParametro.PORCENTAJE_RETROCESO_PULLBACK.getEtiqueta(), valor, opciones);
-        }
-
         @Override
         public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
                 List<ResultadoValidacion> errores = new ArrayList<>();
@@ -145,10 +134,6 @@ public class FiltroFactoryPercentagePullbackHighsLows implements IFiltroFactory 
                 this.objValidador.validarString(this.enumFiltro, EnumParametro.PUNTO_REFERENCIA_PULLBACK,
                                 valoresSeleccionados.get(EnumParametro.PUNTO_REFERENCIA_PULLBACK),
                                 EnumPuntoReferenciaPullback.class)
-                                .ifPresent(errores::add);
-
-                this.objValidador.validarFloat(this.enumFiltro, EnumParametro.PORCENTAJE_RETROCESO_PULLBACK,
-                                valoresSeleccionados.get(EnumParametro.PORCENTAJE_RETROCESO_PULLBACK), 5.0F, 90.0F)
                                 .ifPresent(errores::add);
 
                 return errores;
