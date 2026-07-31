@@ -94,6 +94,11 @@ public class FiltroFactoryVolumeSpike implements IFiltroFactory {
         }
 
         private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+                // El calculo real de spike (velas + proporcion sobre el promedio) ya
+                // decide 0.0/1.0 en signal-processing-service -- CONDICION aca es solo
+                // el gate booleano final, igual que en los demas filtros de patron
+                // (bullish/bearish engulfing, consecutive candles). Default
+                // MAYOR_QUE 0 = "hubo spike".
                 EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
                 List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
                 EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
@@ -105,8 +110,8 @@ public class FiltroFactoryVolumeSpike implements IFiltroFactory {
                                 valorUsuario != null && valorUsuario.getIsInteger() != null
                                                 ? valorUsuario.getIsInteger()
                                                 : false,
-                                valorUsuario != null ? valorUsuario.getValor1() : 10F,
-                                valorUsuario != null ? valorUsuario.getValor2() : 20F);
+                                valorUsuario != null ? valorUsuario.getValor1() : 0F,
+                                valorUsuario != null ? valorUsuario.getValor2() : 1F);
                 return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
         }
 
@@ -158,7 +163,7 @@ public class FiltroFactoryVolumeSpike implements IFiltroFactory {
 
                 this.objValidador
                                 .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
-                                                valoresSeleccionados.get(EnumParametro.CONDICION), 1.0F, 20.0F)
+                                                valoresSeleccionados.get(EnumParametro.CONDICION), 0.0F, 1.0F)
                                 .ifPresent(errores::add);
 
                 this.objValidador.validarInteger(this.enumFiltro, EnumParametro.NUMERO_VELAS_VOLUME_SPIKE,
