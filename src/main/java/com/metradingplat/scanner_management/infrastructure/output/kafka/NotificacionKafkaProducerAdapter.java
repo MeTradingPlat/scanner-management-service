@@ -20,7 +20,7 @@ public class NotificacionKafkaProducerAdapter implements NotificacionKafkaProduc
     private static final String TOPIC_SCANNER_STATE = "scanner.state";
 
     @Override
-    public void publicarNotificacion(Long idEscaner, String tipo, String nivel, String mensaje, String categoria) {
+    public void publicarNotificacion(Long idEscaner, String tipo, String nivel, String mensaje, String categoria, String metadatos) {
         log.info("[KAFKA-PRODUCER] Preparando notificacion: idEscaner={}, tipo={}, nivel={}, categoria={}",
                 idEscaner, tipo, nivel, categoria);
         Map<String, Object> notificacion = new HashMap<>();
@@ -30,6 +30,13 @@ public class NotificacionKafkaProducerAdapter implements NotificacionKafkaProduc
         notificacion.put("idEscaner", idEscaner);
         notificacion.put("categoria", categoria);
         notificacion.put("tipo", tipo);
+        // "evento" en metadatos es un codigo neutral (ej. SCANNER_INICIADO) para
+        // que el frontend arme el texto traducido -- "mensaje" se deja en
+        // espanol solo como respaldo de compatibilidad para filas viejas sin
+        // metadatos y para quien mire los logs crudos del backend.
+        if (metadatos != null) {
+            notificacion.put("metadatos", metadatos);
+        }
         notificacion.put("timestamp", LocalDateTime.now().toString());
 
         try {

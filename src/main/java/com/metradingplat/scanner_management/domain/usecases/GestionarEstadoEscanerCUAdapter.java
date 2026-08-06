@@ -42,7 +42,7 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
         log.info("[USE-CASE] iniciarEscaner - estado cambiado OK, notificando signal-processing, id={}", id);
         this.objFuenteMensajesSignalProcessing.notificarEscanerIniciado(escaner);
         log.info("[USE-CASE] iniciarEscaner - publicando notificacion Kafka, id={}", id);
-        publicarNotificacionCambioEstado(id, "INICIADO", "Escaner iniciado por usuario");
+        publicarNotificacionCambioEstado(id, "INICIADO", "Escaner iniciado por usuario", "{\"evento\":\"SCANNER_INICIADO\"}");
         publicarEventoEstado(id, escaner.getNombre(), estadoAnterior, "INICIADO", "Iniciado por usuario");
         log.info("[USE-CASE] iniciarEscaner - COMPLETADO, id={}, nuevoEstado={}", id, estado.getEnumEstadoEscaner());
         return estado;
@@ -57,7 +57,7 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
         log.info("[USE-CASE] detenerEscaner - estado cambiado OK, notificando signal-processing, id={}", id);
         this.objFuenteMensajesSignalProcessing.notificarEscanerDetenido(id);
         log.info("[USE-CASE] detenerEscaner - publicando notificacion Kafka, id={}", id);
-        publicarNotificacionCambioEstado(id, "DETENIDO", "Escaner detenido por usuario");
+        publicarNotificacionCambioEstado(id, "DETENIDO", "Escaner detenido por usuario", "{\"evento\":\"SCANNER_DETENIDO_MANUAL\"}");
         publicarEventoEstado(id, escaner.getNombre(), estadoAnterior, "DETENIDO", "Detenido por usuario");
         log.info("[USE-CASE] detenerEscaner - COMPLETADO, id={}, nuevoEstado={}", id, estado.getEnumEstadoEscaner());
         return estado;
@@ -71,7 +71,7 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
         // No notificar a signal-processing (ya lo sabe, el evento viene de alli)
         // Pero SÍ notificar a los clientes SSE para que actualicen la UI
         log.info("[USE-CASE] detenerEscanerInterno - publicando notificacion Kafka, id={}", id);
-        publicarNotificacionCambioEstado(id, "DETENIDO", "Escaner UNA_VEZ completado");
+        publicarNotificacionCambioEstado(id, "DETENIDO", "Escaner UNA_VEZ completado", "{\"evento\":\"SCANNER_DETENIDO_AUTOMATICO\"}");
         publicarEventoEstado(id, escaner.getNombre(), "INICIADO", "DETENIDO", "ESCANER_UNA_VEZ completado");
         log.info("[USE-CASE] detenerEscanerInterno - COMPLETADO, id={}", id);
         return estado;
@@ -113,7 +113,7 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
         return this.objGestionarEstadoEscanerGatewayIntPort.cambiarEstadoDeEscaner(escaner, nuevoEstado);
     }
 
-    private void publicarNotificacionCambioEstado(Long idEscaner, String nuevoEstado, String mensaje) {
+    private void publicarNotificacionCambioEstado(Long idEscaner, String nuevoEstado, String mensaje, String metadatos) {
         if (this.objNotificacionProducer != null) {
             log.info("[USE-CASE] Publicando notificacion Kafka: idEscaner={}, tipo=SCANNER_STATE, estado={}",
                     idEscaner, nuevoEstado);
@@ -122,7 +122,8 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
                 "SCANNER_STATE",
                 "INFO",
                 mensaje,
-                "SCANNER"
+                "SCANNER",
+                metadatos
             );
             log.info("[USE-CASE] Notificacion Kafka publicada OK: idEscaner={}", idEscaner);
         } else {
