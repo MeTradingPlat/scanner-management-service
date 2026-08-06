@@ -49,6 +49,7 @@ jobs:
               --name "postgres-scanners" \
               --network "metradingplat-network" \
               --restart "always" \
+              --cpus "0.5" \
               --memory "256m" \
               --memory-swap "256m" \
               -e POSTGRES_DB="bd_scanners" \
@@ -90,6 +91,7 @@ jobs:
             --name "scanner-management-service" \
             --network "metradingplat-network" \
             --restart "unless-stopped" \
+            --cpus "0.5" \
             --memory "384m" \
             --memory-swap "384m" \
             --label project="metradingplat" \
