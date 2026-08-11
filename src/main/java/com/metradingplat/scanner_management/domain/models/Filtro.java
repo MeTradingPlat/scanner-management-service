@@ -5,7 +5,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.metradingplat.scanner_management.domain.enums.EnumCategoriaFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
+import com.metradingplat.scanner_management.domain.enums.EnumTipoFiltro;
 
 @Data
 @AllArgsConstructor
@@ -16,4 +18,9 @@ public class Filtro {
     private String etiquetaDescripcion;
     private CategoriaFiltro objCategoria;
     private List<Parametro> parametros;
+
+    public EnumTipoFiltro getEnumTipoFiltro() {
+        EnumCategoriaFiltro categoria = this.objCategoria != null ? this.objCategoria.getEnumCategoriaFiltro() : null;
+        return ClasificadorTipoFiltro.clasificar(this.enumFiltro, categoria);
+    }
 }

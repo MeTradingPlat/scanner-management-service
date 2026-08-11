@@ -98,6 +98,9 @@ public class FuenteMensajesImplAdapter implements FuenteMensajesIntPort {
         objeto.setEtiquetaDescripcion(this.obtenerMensaje(objeto.getEnumFiltro().getEtiquetaDescripcion(), locale));
         objeto.setObjCategoria(this.internacionalizarCategoria(objeto.getObjCategoria()));
         objeto.setParametros(this.internacionalizarParametros(objeto.getParametros()));
+        if (objeto.getEnumTipoFiltro() != null) {
+            objeto.setEtiquetaTipoFiltro(this.obtenerMensaje(objeto.getEnumTipoFiltro().getEtiqueta(), locale));
+        }
         return objeto;
     }
 

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
+import com.metradingplat.scanner_management.domain.enums.EnumTipoFiltro;
 
 @Getter
 @Setter
@@ -18,4 +19,6 @@ public class FiltroDtoRespuesta {
     private String etiquetaDescripcion;
     private CategoriaDTORespuesta objCategoria;
     private List<ParametroDTORespuesta> parametros;
+    private EnumTipoFiltro enumTipoFiltro;
+    private String etiquetaTipoFiltro;
 }
