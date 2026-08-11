@@ -10,9 +10,11 @@ import java.time.LocalTime;
 /**
  * Validador personalizado que verifica que un rango de tiempo sea válido.
  *
- * Valida que:
- * - Ambos campos (inicio y fin) no sean null
- * - La hora de inicio sea anterior a la hora de fin
+ * Valida que ambos campos (inicio y fin) no sean null. No exige que el
+ * inicio sea anterior al fin -- un escaner de un mercado en otro huso
+ * horario (ej. Tokio, 9pm-1:30am en referencia a Nueva York) cruza la
+ * medianoche legitimamente, y el motor que evalua el escaner
+ * (signal-processing-service, is_within_window) ya sabe manejar ese caso.
  *
  * Este validador se aplica a nivel de clase y accede a los campos
  * mediante reflexión usando Spring's BeanWrapper.
@@ -45,16 +47,9 @@ public class TimeRangeValidator implements ConstraintValidator<ValidTimeRange, O
                 return true;
             }
 
-            // Validar que sean LocalTime
-            if (!(startValue instanceof LocalTime) || !(endValue instanceof LocalTime)) {
-                return false;
-            }
-
-            LocalTime startTime = (LocalTime) startValue;
-            LocalTime endTime = (LocalTime) endValue;
-
-            // La hora de inicio debe ser anterior a la hora de fin
-            return startTime.isBefore(endTime);
+            // Validar que sean LocalTime -- se acepta inicio > fin (cruce de
+            // medianoche) a proposito, ver comentario de la clase.
+            return startValue instanceof LocalTime && endValue instanceof LocalTime;
 
         } catch (Exception e) {
             // Si hay error accediendo a las propiedades, consideramos inválido
