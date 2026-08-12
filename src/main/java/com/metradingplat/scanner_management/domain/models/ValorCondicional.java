@@ -1,5 +1,7 @@
 package com.metradingplat.scanner_management.domain.models;
 
+import java.util.List;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +16,11 @@ public class ValorCondicional extends Valor {
     private Boolean isInteger = false;
     private Number valor1;
     private Number valor2;
+    // Cuando la estrategia solo puede devolver un conjunto discreto de
+    // valores (ej. -1/0/1 para patrones detectados), el frontend usa esto
+    // para mostrar un selector en vez de un campo numerico libre -- null
+    // para filtros con salida continua (rango normal de valor1/valor2).
+    private List<Number> valoresPermitidos;
 
     public ValorCondicional(String etiqueta, EnumTipoValor enumTipoValor, EnumCondicional enumCondicional,
             Number valor1, Number valor2) {

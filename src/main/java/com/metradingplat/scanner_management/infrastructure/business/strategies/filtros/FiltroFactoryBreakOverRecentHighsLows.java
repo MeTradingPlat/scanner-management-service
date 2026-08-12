@@ -128,19 +128,20 @@ public class FiltroFactoryBreakOverRecentHighsLows implements IFiltroFactory {
         }
 
         private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+                // compute_value() solo devuelve 0.0 (no rompio) o 1.0 (rompio el
+                // rango reciente) -- IGUAL_A 1 es la unica condicion valida.
                 EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
-                List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
-                EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
-                                : EnumCondicional.MAYOR_QUE;
+                List<Valor> opciones = CondicionalOpciones.soloIgualA();
                 ValorCondicional valor = new ValorCondicional(
-                                enumCondicional.getEtiqueta(),
+                                EnumCondicional.IGUAL_A.getEtiqueta(),
                                 enumTipoValor,
-                                enumCondicional,
+                                EnumCondicional.IGUAL_A,
                                 valorUsuario != null && valorUsuario.getIsInteger() != null
                                                 ? valorUsuario.getIsInteger()
                                                 : false,
-                                valorUsuario != null ? valorUsuario.getValor1() : 0F,
+                                valorUsuario != null ? valorUsuario.getValor1() : 1F,
                                 valorUsuario != null ? valorUsuario.getValor2() : 1F);
+                valor.setValoresPermitidos(CondicionalOpciones.BINARIO);
                 return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
         }
 

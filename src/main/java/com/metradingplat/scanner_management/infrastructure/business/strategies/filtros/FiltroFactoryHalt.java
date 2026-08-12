@@ -5,24 +5,20 @@ import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumParametro;
 import com.metradingplat.scanner_management.domain.enums.EnumTipoValor;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
-import com.metradingplat.scanner_management.domain.enums.valores.IEnumValores;
 import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
-import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
 import com.metradingplat.scanner_management.infrastructure.business.validation.ResultadoValidacion;
 import com.metradingplat.scanner_management.infrastructure.business.validation.ValidadorParametroFiltro;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 
@@ -82,26 +78,21 @@ public class FiltroFactoryHalt implements IFiltroFactory {
         return filtro;
     }
 
-    private List<Valor> obtenerOpciones(IEnumValores[] enumValores) {
-        return Arrays.stream(enumValores)
-                .map(e -> new ValorString(e.getEtiqueta(), EnumTipoValor.STRING, e.getName()))
-                .collect(Collectors.toList());
-    }
-
     private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+        // compute_value() solo devuelve 0.0 (no halted) o 1.0 (halted) --
+        // IGUAL_A 1 es la unica condicion valida.
         EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
-        List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
-        EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
-                : EnumCondicional.MAYOR_QUE;
+        List<Valor> opciones = CondicionalOpciones.soloIgualA();
         ValorCondicional valor = new ValorCondicional(
-                enumCondicional.getEtiqueta(),
+                EnumCondicional.IGUAL_A.getEtiqueta(),
                 enumTipoValor,
-                enumCondicional,
+                EnumCondicional.IGUAL_A,
                 valorUsuario != null && valorUsuario.getIsInteger() != null
                         ? valorUsuario.getIsInteger()
                         : false,
-                valorUsuario != null ? valorUsuario.getValor1() : 0F,
+                valorUsuario != null ? valorUsuario.getValor1() : 1F,
                 valorUsuario != null ? valorUsuario.getValor2() : 1F);
+        valor.setValoresPermitidos(CondicionalOpciones.BINARIO);
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }
 

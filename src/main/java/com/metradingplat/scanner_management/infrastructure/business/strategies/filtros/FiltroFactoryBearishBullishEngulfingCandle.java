@@ -132,18 +132,17 @@ public class FiltroFactoryBearishBullishEngulfingCandle implements IFiltroFactor
 
         private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
                 EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
-                List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
-                EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
-                                : EnumCondicional.IGUAL_A;
+                List<Valor> opciones = CondicionalOpciones.soloIgualA();
                 ValorCondicional valor = new ValorCondicional(
-                                enumCondicional.getEtiqueta(),
+                                EnumCondicional.IGUAL_A.getEtiqueta(),
                                 enumTipoValor,
-                                enumCondicional,
+                                EnumCondicional.IGUAL_A,
                                 valorUsuario != null && valorUsuario.getIsInteger() != null
                                                 ? valorUsuario.getIsInteger()
                                                 : false,
                                 valorUsuario != null ? valorUsuario.getValor1() : 1F,
                                 valorUsuario != null ? valorUsuario.getValor2() : 1F);
+                valor.setValoresPermitidos(CondicionalOpciones.TERNARIO);
                 return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
         }
 

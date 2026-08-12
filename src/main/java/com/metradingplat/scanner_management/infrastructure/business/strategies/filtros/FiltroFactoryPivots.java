@@ -90,19 +90,21 @@ public class FiltroFactoryPivots implements IFiltroFactory {
         }
 
         private Parametro crearParametroCondicion(ValorCondicional valorUsuario) {
+                // compute_value() solo devuelve -1.0 (pivote bajo) / 0.0 (ninguno) /
+                // 1.0 (pivote alto) -- MAYOR_QUE nunca podia ser verdadero contra ese
+                // rango, mismo problema que tenia CONSECUTIVE_CANDLES.
                 EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
-                List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
-                EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
-                                : EnumCondicional.MAYOR_QUE;
+                List<Valor> opciones = CondicionalOpciones.soloIgualA();
                 ValorCondicional valor = new ValorCondicional(
-                                enumCondicional.getEtiqueta(),
+                                EnumCondicional.IGUAL_A.getEtiqueta(),
                                 enumTipoValor,
-                                enumCondicional,
+                                EnumCondicional.IGUAL_A,
                                 valorUsuario != null && valorUsuario.getIsInteger() != null
                                                 ? valorUsuario.getIsInteger()
                                                 : false,
-                                valorUsuario != null ? valorUsuario.getValor1() : 0.0F,
-                                valorUsuario != null ? valorUsuario.getValor2() : 0.0F);
+                                valorUsuario != null ? valorUsuario.getValor1() : 1F,
+                                valorUsuario != null ? valorUsuario.getValor2() : 1F);
+                valor.setValoresPermitidos(CondicionalOpciones.TERNARIO);
                 return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
         }
 
@@ -128,8 +130,7 @@ public class FiltroFactoryPivots implements IFiltroFactory {
 
                 this.objValidador
                                 .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
-                                                valoresSeleccionados.get(EnumParametro.CONDICION), 0.0F,
-                                                50_000_000_000.0F)
+                                                valoresSeleccionados.get(EnumParametro.CONDICION), -1.0F, 1.0F)
                                 .ifPresent(errores::add);
 
                 List<EnumTimeframe> allowedTimeframesPivots = Arrays.asList(

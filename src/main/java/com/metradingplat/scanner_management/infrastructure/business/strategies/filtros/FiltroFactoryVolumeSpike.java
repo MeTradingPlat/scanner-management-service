@@ -98,21 +98,20 @@ public class FiltroFactoryVolumeSpike implements IFiltroFactory {
                 // El calculo real de spike (velas + proporcion sobre el promedio) ya
                 // decide 0.0/1.0 en signal-processing-service -- CONDICION aca es solo
                 // el gate booleano final, igual que en los demas filtros de patron
-                // (bullish/bearish engulfing, consecutive candles). Default
-                // MAYOR_QUE 0 = "hubo spike".
+                // (bullish/bearish engulfing, consecutive candles). IGUAL_A 1 es la
+                // unica condicion que tiene sentido contra ese resultado.
                 EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
-                List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
-                EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
-                                : EnumCondicional.MAYOR_QUE;
+                List<Valor> opciones = CondicionalOpciones.soloIgualA();
                 ValorCondicional valor = new ValorCondicional(
-                                enumCondicional.getEtiqueta(),
+                                EnumCondicional.IGUAL_A.getEtiqueta(),
                                 enumTipoValor,
-                                enumCondicional,
+                                EnumCondicional.IGUAL_A,
                                 valorUsuario != null && valorUsuario.getIsInteger() != null
                                                 ? valorUsuario.getIsInteger()
                                                 : false,
-                                valorUsuario != null ? valorUsuario.getValor1() : 0F,
+                                valorUsuario != null ? valorUsuario.getValor1() : 1F,
                                 valorUsuario != null ? valorUsuario.getValor2() : 1F);
+                valor.setValoresPermitidos(CondicionalOpciones.BINARIO);
                 return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
         }
 
