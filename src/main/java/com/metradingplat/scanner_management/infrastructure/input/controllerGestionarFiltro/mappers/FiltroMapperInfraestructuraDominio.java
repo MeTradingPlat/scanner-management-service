@@ -13,9 +13,11 @@ import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
 import com.metradingplat.scanner_management.domain.models.ValorFloat;
 import com.metradingplat.scanner_management.domain.models.ValorInteger;
+import com.metradingplat.scanner_management.domain.models.OpcionValor;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.CategoriaDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.FiltroDtoRespuesta;
+import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.OpcionValorDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ParametroDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorCondicionalDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorDTORespuesta;
@@ -76,6 +78,11 @@ public interface FiltroMapperInfraestructuraDominio {
     ValorCondicionalDTORespuesta mappearDeValorCondicionalARespuesta(ValorCondicional valor);
 
     List<ValorCondicionalDTORespuesta> mappearListaDeValorCondicionalARespuesta(List<ValorCondicional> valores);
+
+    // --- OpcionValor (valores discretos que un condicional puede tomar) ---
+    OpcionValorDTORespuesta mappearDeOpcionValorARespuesta(OpcionValor opcion);
+
+    List<OpcionValorDTORespuesta> mappearListaDeOpcionValorARespuesta(List<OpcionValor> opciones);
 
     // --- ValorFloat ---
     ValorFloat mappearDePeticionAValorFloat(ValorFloatDTOPeticion peticion);

@@ -18,9 +18,10 @@ public class ValorCondicional extends Valor {
     private Number valor2;
     // Cuando la estrategia solo puede devolver un conjunto discreto de
     // valores (ej. -1/0/1 para patrones detectados), el frontend usa esto
-    // para mostrar un selector en vez de un campo numerico libre -- null
-    // para filtros con salida continua (rango normal de valor1/valor2).
-    private List<Number> valoresPermitidos;
+    // para mostrar un selector con su etiqueta en vez de un campo numerico
+    // libre -- null para filtros con salida continua (rango normal de
+    // valor1/valor2).
+    private List<OpcionValor> valoresPermitidos;
 
     public ValorCondicional(String etiqueta, EnumTipoValor enumTipoValor, EnumCondicional enumCondicional,
             Number valor1, Number valor2) {

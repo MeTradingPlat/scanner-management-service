@@ -18,7 +18,7 @@ public class ValorCondicionalDTORespuesta extends ValorDTORespuesta {
     private Boolean isInteger;
     private Number valor1;
     private Number valor2;
-    private List<Number> valoresPermitidos;
+    private List<OpcionValorDTORespuesta> valoresPermitidos;
 
     public ValorCondicionalDTORespuesta(EnumTipoValor enumTipoValor, String etiqueta, EnumCondicional enumCondicional,
             Boolean isInteger, Number valor1, Number valor2) {

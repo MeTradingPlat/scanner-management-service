@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.context.MessageSource;
@@ -16,6 +17,7 @@ import com.metradingplat.scanner_management.infrastructure.input.controllerGesti
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarEscaner.DTOAnswer.TipoEjecucionDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.CategoriaDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.FiltroDtoRespuesta;
+import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.OpcionValorDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ParametroDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarMercado.DTOAnswer.MercadoDTORespuesta;
@@ -155,13 +157,25 @@ public class FuenteMensajesImplAdapter implements FuenteMensajesIntPort {
             return null;
 
         if (objeto instanceof ValorCondicionalDTORespuesta condicional) {
-            String etiquetaBase = this.obtenerMensaje(condicional.getEnumCondicional().getEtiqueta(), this.getLocale());
+            Locale locale = this.getLocale();
+
+            if (condicional.getValoresPermitidos() != null) {
+                for (OpcionValorDTORespuesta opcion : condicional.getValoresPermitidos()) {
+                    opcion.setEtiqueta(this.obtenerMensaje(opcion.getEtiquetaClave(), locale));
+                }
+            }
+
+            String etiquetaBase = this.obtenerMensaje(condicional.getEnumCondicional().getEtiqueta(), locale);
+            // Cuando el valor viene de un conjunto discreto (ej. patrones de
+            // velas), mostrar su etiqueta resuelta en vez del numero crudo.
+            String etiquetaValor1 = this.etiquetaDeValorPermitido(condicional, condicional.getValor1())
+                    .orElse(String.valueOf(condicional.getValor1()));
             String etiquetaFormateada = switch (condicional.getEnumCondicional()) {
-                case MAYOR_QUE -> etiquetaBase + " " + condicional.getValor1();
-                case MENOR_QUE -> etiquetaBase + " " + condicional.getValor1();
-                case IGUAL_A -> etiquetaBase + " " + condicional.getValor1();
-                case ENTRE -> etiquetaBase + " " + condicional.getValor1() + " - " + condicional.getValor2();
-                case FUERA -> etiquetaBase + " " + condicional.getValor1() + " - " + condicional.getValor2();
+                case MAYOR_QUE -> etiquetaBase + " " + etiquetaValor1;
+                case MENOR_QUE -> etiquetaBase + " " + etiquetaValor1;
+                case IGUAL_A -> etiquetaBase + " " + etiquetaValor1;
+                case ENTRE -> etiquetaBase + " " + etiquetaValor1 + " - " + condicional.getValor2();
+                case FUERA -> etiquetaBase + " " + etiquetaValor1 + " - " + condicional.getValor2();
                 default -> etiquetaBase;
             };
             objeto.setEtiqueta(etiquetaFormateada);
@@ -170,6 +184,17 @@ public class FuenteMensajesImplAdapter implements FuenteMensajesIntPort {
         }
 
         return objeto;
+    }
+
+    private Optional<String> etiquetaDeValorPermitido(ValorCondicionalDTORespuesta condicional, Number valor) {
+        if (condicional.getValoresPermitidos() == null || valor == null) {
+            return Optional.empty();
+        }
+        return condicional.getValoresPermitidos().stream()
+                .filter(opcion -> opcion.getValor() != null
+                        && opcion.getValor().doubleValue() == valor.doubleValue())
+                .map(OpcionValorDTORespuesta::getEtiqueta)
+                .findFirst();
     }
 
     @Override

@@ -92,7 +92,7 @@ public class FiltroFactoryHalt implements IFiltroFactory {
                         : false,
                 valorUsuario != null ? valorUsuario.getValor1() : 1F,
                 valorUsuario != null ? valorUsuario.getValor2() : 1F);
-        valor.setValoresPermitidos(CondicionalOpciones.BINARIO);
+        valor.setValoresPermitidos(CondicionalOpciones.siNo());
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }
 
