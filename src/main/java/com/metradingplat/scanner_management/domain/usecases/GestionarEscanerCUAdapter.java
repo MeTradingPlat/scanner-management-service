@@ -24,9 +24,6 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
         if (this.objGestionarEscanerGatewayIntPort.existeEscanerPorNombre(objEscaner.getNombre())) {
             this.objFormateadorResultadosIntPort.errorEntidadYaExiste("validation.scanner.name.exists");
         }
-        if (objEscaner.getHoraInicio().isAfter(objEscaner.getHoraFin())) {
-            this.objFormateadorResultadosIntPort.errorReglaNegocioViolada("validation.scanner.schedule.invalid");
-        }
         if (objEscaner.getMercados() == null || objEscaner.getMercados().isEmpty()) {
             this.objFormateadorResultadosIntPort.errorEntidadNoExiste("validation.scanner.market.required");
         }
@@ -69,9 +66,6 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
         if (this.objGestionarEscanerGatewayIntPort.existeEscanerPorNombre(objEscaner.getIdEscaner(),
                 objEscaner.getNombre())) {
             this.objFormateadorResultadosIntPort.errorEntidadYaExiste("validation.scanner.name.exists");
-        }
-        if (objEscaner.getHoraInicio().isAfter(objEscaner.getHoraFin())) {
-            this.objFormateadorResultadosIntPort.errorReglaNegocioViolada("validation.scanner.schedule.invalid");
         }
         if (objEscaner.getObjTipoEjecucion() == null) {
             this.objFormateadorResultadosIntPort.errorEntidadNoExiste("validation.scanner.executionType.required");
