@@ -5,6 +5,7 @@ import com.metradingplat.scanner_management.application.output.GestionarEscanerG
 import com.metradingplat.scanner_management.application.output.GestionarEstadoEscanerGatewayIntPort;
 import com.metradingplat.scanner_management.application.output.GestionarFiltroGatewayIntPort;
 import com.metradingplat.scanner_management.application.output.GestorEstrategiaFiltroIntPort;
+import com.metradingplat.scanner_management.domain.usecases.GestionarCalendarioCUAdapter;
 import com.metradingplat.scanner_management.domain.usecases.GestionarEscanerCUAdapter;
 import com.metradingplat.scanner_management.domain.usecases.GestionarEstadoEscanerCUAdapter;
 import com.metradingplat.scanner_management.domain.usecases.GestionarFiltroCUAdapter;
@@ -55,5 +56,11 @@ public class BeanConfigurations {
     @Bean
     public GestionarMercadoCUAdapter gestionarMercadoCUIntPort() {
         return new GestionarMercadoCUAdapter();
+    }
+
+    @Bean
+    public GestionarCalendarioCUAdapter gestionarCalendarioCUIntPort(
+            FuenteMensajesSignalProcessingIntPort objFuenteMensajesSignalProcessing) {
+        return new GestionarCalendarioCUAdapter(objFuenteMensajesSignalProcessing);
     }
 }

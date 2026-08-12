@@ -4,11 +4,15 @@ import com.metradingplat.scanner_management.application.output.FuenteMensajesSig
 import com.metradingplat.scanner_management.application.output.GestorEstrategiaFiltroIntPort;
 import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Escaner;
+import com.metradingplat.scanner_management.domain.models.EstadoCalendario;
 import com.metradingplat.scanner_management.domain.models.Filtro;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Value;
+
+import java.time.LocalDate;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -67,6 +71,23 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
         } catch (Exception e) {
             log.error("[SIGNAL-PROC-ADAPTER] ERROR notificando detencion escaner id={}: {}",
                     idEscaner, e.getMessage());
+        }
+    }
+
+    // signal-processing-service es la unica fuente del calendario de dias
+    // habiles (feriados de mercado incluidos) -- no se duplica esa lista aca,
+    // solo se consulta.
+    @Override
+    public EstadoCalendario obtenerEstadoCalendario() {
+        String url = signalProcessingUrl + "/signal-processing/calendar/estado";
+        try {
+            Map<String, Object> respuesta = restTemplate.getForObject(url, Map.class);
+            boolean hoyEsDiaHabil = Boolean.TRUE.equals(respuesta.get("hoyEsDiaHabil"));
+            LocalDate proximoDiaHabil = LocalDate.parse((String) respuesta.get("proximoDiaHabil"));
+            return new EstadoCalendario(hoyEsDiaHabil, proximoDiaHabil);
+        } catch (Exception e) {
+            log.error("[SIGNAL-PROC-ADAPTER] ERROR consultando calendario: {}", e.getMessage());
+            return null;
         }
     }
 }
