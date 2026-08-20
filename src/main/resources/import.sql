@@ -8,3 +8,4 @@ INSERT INTO mercados (id_mercado, enum_mercado) VALUES (2, 'NASDAQ') ON CONFLICT
 INSERT INTO mercados (id_mercado, enum_mercado) VALUES (3, 'AMEX') ON CONFLICT (id_mercado) DO NOTHING;
 INSERT INTO mercados (id_mercado, enum_mercado) VALUES (4, 'ETF') ON CONFLICT (id_mercado) DO NOTHING;
 INSERT INTO mercados (id_mercado, enum_mercado) VALUES (5, 'OTC') ON CONFLICT (id_mercado) DO NOTHING;
+INSERT INTO mercados (id_mercado, enum_mercado) VALUES (6, 'BATS') ON CONFLICT (id_mercado) DO NOTHING;

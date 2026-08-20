@@ -10,6 +10,7 @@ public enum EnumMercado {
     NASDAQ("market.nasdaq"),
     AMEX("market.amex"),
     ETF("market.etf"),
+    BATS("market.bats"),
     OTC("market.otc");
 
     private final String etiqueta;
