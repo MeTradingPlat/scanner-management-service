@@ -38,7 +38,7 @@ public class PivotesRestController {
             @RequestParam(defaultValue = "14") int atrLength,
             @RequestParam(defaultValue = "0.1") float slipRatioPct,
             @RequestParam(defaultValue = "2") int longitudVelas,
-            @RequestParam(defaultValue = "5") int aniosHistorico,
+            @RequestParam(defaultValue = "4") int aniosHistorico,
             @RequestParam(defaultValue = "5") int numeroPivotes) {
         PivotesEncontrados pivotes;
         try {
