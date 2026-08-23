@@ -142,7 +142,11 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
         }
         return niveles.stream()
                 .map(nivel -> new PivotLevel(
-                        LocalDateTime.parse(((String) nivel.get("timestamp")).replace("Z", "")),
+                        // datetime.isoformat() de Python en un valor aware da
+                        // "...+00:00" (no un literal "Z"), que LocalDateTime.parse
+                        // no acepta -- OffsetDateTime si lo entiende, se descarta
+                        // el offset porque ya se sabe que siempre es UTC.
+                        java.time.OffsetDateTime.parse((String) nivel.get("timestamp")).toLocalDateTime(),
                         new BigDecimal(nivel.get("price").toString())))
                 .collect(Collectors.toList());
     }
