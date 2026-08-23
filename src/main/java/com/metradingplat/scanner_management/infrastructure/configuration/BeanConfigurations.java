@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import com.metradingplat.scanner_management.application.output.FuenteMensajesSignalProcessingIntPort;
 import com.metradingplat.scanner_management.application.output.LimpiezaDatosEscanerIntPort;
 import com.metradingplat.scanner_management.application.output.NotificacionKafkaProducerIntPort;
+import com.metradingplat.scanner_management.domain.usecases.GestionarPivotesCUAdapter;
 
 @Configuration
 public class BeanConfigurations {
@@ -71,5 +72,11 @@ public class BeanConfigurations {
     public GestionarCalendarioCUAdapter gestionarCalendarioCUIntPort(
             FuenteMensajesSignalProcessingIntPort objFuenteMensajesSignalProcessing) {
         return new GestionarCalendarioCUAdapter(objFuenteMensajesSignalProcessing);
+    }
+
+    @Bean
+    public GestionarPivotesCUAdapter gestionarPivotesCUIntPort(
+            FuenteMensajesSignalProcessingIntPort objFuenteMensajesSignalProcessing) {
+        return new GestionarPivotesCUAdapter(objFuenteMensajesSignalProcessing);
     }
 }
