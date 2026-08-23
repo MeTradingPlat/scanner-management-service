@@ -147,7 +147,8 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
                         // no acepta -- OffsetDateTime si lo entiende, se descarta
                         // el offset porque ya se sabe que siempre es UTC.
                         java.time.OffsetDateTime.parse((String) nivel.get("timestamp")).toLocalDateTime(),
-                        new BigDecimal(nivel.get("price").toString())))
+                        new BigDecimal(nivel.get("price").toString()),
+                        (String) nivel.get("strength")))
                 .collect(Collectors.toList());
     }
 }

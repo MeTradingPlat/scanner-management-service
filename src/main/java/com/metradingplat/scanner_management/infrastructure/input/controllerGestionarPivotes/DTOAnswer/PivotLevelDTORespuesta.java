@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class PivotLevelDTORespuesta {
     private LocalDateTime timestamp;
     private BigDecimal price;
+    private String strength;
 }

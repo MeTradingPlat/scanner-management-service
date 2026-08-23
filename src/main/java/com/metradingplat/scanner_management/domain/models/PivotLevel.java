@@ -13,4 +13,8 @@ import lombok.NoArgsConstructor;
 public class PivotLevel {
     private LocalDateTime timestamp;
     private BigDecimal price;
+    // "strong" | "weak" -- fuerte cae del lado correcto del precio actual,
+    // debil es el relleno automatico cuando faltan fuertes (ver
+    // pivots_finder.py). Se muestran por separado en el chart, no fusionados.
+    private String strength;
 }

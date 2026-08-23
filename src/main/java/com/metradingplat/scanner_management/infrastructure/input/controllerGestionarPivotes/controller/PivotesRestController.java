@@ -39,7 +39,7 @@ public class PivotesRestController {
             @RequestParam(defaultValue = "0.1") float slipRatioPct,
             @RequestParam(defaultValue = "2") int longitudVelas,
             @RequestParam(defaultValue = "5") int aniosHistorico,
-            @RequestParam(defaultValue = "1") int numeroPivotes) {
+            @RequestParam(defaultValue = "5") int numeroPivotes) {
         PivotesEncontrados pivotes;
         try {
             pivotes = this.objGestionarPivotesCUInt.obtenerPivots(
@@ -60,7 +60,7 @@ public class PivotesRestController {
 
     private List<PivotLevelDTORespuesta> mapearNiveles(List<com.metradingplat.scanner_management.domain.models.PivotLevel> niveles) {
         return niveles.stream()
-                .map(nivel -> new PivotLevelDTORespuesta(nivel.getTimestamp(), nivel.getPrice()))
+                .map(nivel -> new PivotLevelDTORespuesta(nivel.getTimestamp(), nivel.getPrice(), nivel.getStrength()))
                 .collect(Collectors.toList());
     }
 }
