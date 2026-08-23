@@ -13,7 +13,10 @@ import lombok.Getter;
 public enum EnumParametroIndicadorSalida {
     TIMEFRAME_PIVOTS_SALIDA("parameter.indicatorExit.pivots.timeframe"),
     LONGITUD_VELAS_PIVOTS_SALIDA("parameter.indicatorExit.pivots.longitudVelas"),
-    SLIP_RATIO_PIVOTS_SALIDA("parameter.indicatorExit.pivots.slipRatio");
+    SLIP_RATIO_PIVOTS_SALIDA("parameter.indicatorExit.pivots.slipRatio"),
+    LONGITUD_ATR_PIVOTS_SALIDA("parameter.indicatorExit.pivots.longitudAtr"),
+    ANIOS_HISTORICO_PIVOTS_SALIDA("parameter.indicatorExit.pivots.aniosHistorico"),
+    NUMERO_PIVOTES_PIVOTS_SALIDA("parameter.indicatorExit.pivots.numeroPivotes");
 
     private final String etiqueta;
 }

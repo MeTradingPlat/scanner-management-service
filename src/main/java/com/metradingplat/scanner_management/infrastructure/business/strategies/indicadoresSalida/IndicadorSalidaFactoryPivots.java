@@ -26,20 +26,30 @@ import com.metradingplat.scanner_management.infrastructure.business.validation.R
 /**
  * Indicador de salida basado en pivotes de precio (swing highs/lows) --
  * calcula niveles de stop loss / take profit, no participa en el escaneo de
- * entrada. Solo configuracion y etiquetado por ahora: el calculo real
- * (deteccion vectorizada de pivotes con rango ATR, fusion de pivotes cercanos
- * por slipRatio) se implementa cuando se defina como se conecta con
- * ordenes/posiciones.
+ * entrada. Solo configuracion y etiquetado por ahora: el calculo real se
+ * implementa en signal-processing-service, siguiendo el mismo diseno que
+ * PivotsAlpaca (busca picos/valles dentro de un rango de precio = N x ATR
+ * alrededor del precio actual; "fuerte" = pivote del lado correcto del precio,
+ * "debil" = respaldo automatico cuando faltan fuertes -- no es una opcion que
+ * el usuario elija, por eso no hay parametro para eso aqui).
  */
 @Component
 public class IndicadorSalidaFactoryPivots implements IIndicadorSalidaFactory {
 
-    private static final List<EnumTimeframe> TIMEFRAMES_PERMITIDOS = Arrays.asList(
-            EnumTimeframe._1D, EnumTimeframe._1W, EnumTimeframe._1MO);
+    // Solo 1D por ahora -- se deja como lista (no una constante suelta) para
+    // no tener que rehacer el parametro cuando se habilite mas de un
+    // timeframe mas adelante.
+    private static final List<EnumTimeframe> TIMEFRAMES_PERMITIDOS = List.of(EnumTimeframe._1D);
     private static final int LONGITUD_VELAS_MIN = 1;
     private static final int LONGITUD_VELAS_MAX = 10;
     private static final float SLIP_RATIO_MIN = 0f;
     private static final float SLIP_RATIO_MAX = 1f;
+    private static final int LONGITUD_ATR_MIN = 2;
+    private static final int LONGITUD_ATR_MAX = 100;
+    private static final int ANIOS_HISTORICO_MIN = 1;
+    private static final int ANIOS_HISTORICO_MAX = 10;
+    private static final int NUMERO_PIVOTES_MIN = 1;
+    private static final int NUMERO_PIVOTES_MAX = 10;
 
     private final EnumIndicadorSalida enumIndicadorSalida = EnumIndicadorSalida.PIVOTS;
 
@@ -73,6 +83,12 @@ public class IndicadorSalidaFactoryPivots implements IIndicadorSalidaFactory {
                 (ValorInteger) valoresSeleccionados.get(EnumParametroIndicadorSalida.LONGITUD_VELAS_PIVOTS_SALIDA)));
         parametros.add(this.crearParametroSlipRatio(
                 (ValorFloat) valoresSeleccionados.get(EnumParametroIndicadorSalida.SLIP_RATIO_PIVOTS_SALIDA)));
+        parametros.add(this.crearParametroLongitudAtr(
+                (ValorInteger) valoresSeleccionados.get(EnumParametroIndicadorSalida.LONGITUD_ATR_PIVOTS_SALIDA)));
+        parametros.add(this.crearParametroAniosHistorico(
+                (ValorInteger) valoresSeleccionados.get(EnumParametroIndicadorSalida.ANIOS_HISTORICO_PIVOTS_SALIDA)));
+        parametros.add(this.crearParametroNumeroPivotes(
+                (ValorInteger) valoresSeleccionados.get(EnumParametroIndicadorSalida.NUMERO_PIVOTES_PIVOTS_SALIDA)));
 
         indicador.setParametros(parametros);
         return indicador;
@@ -122,6 +138,56 @@ public class IndicadorSalidaFactoryPivots implements IIndicadorSalidaFactory {
                 new ArrayList<>());
     }
 
+    // Periodo del ATR usado para escalar tanto el rango de busqueda de
+    // pivotes como el slip ratio -- 14 es el mismo default que PivotsAlpaca
+    // (y el que ya usa el resto de la plataforma para ATR, ver
+    // FiltroFactoryATR).
+    private ParametroIndicadorSalida crearParametroLongitudAtr(ValorInteger valorUsuario) {
+        Integer longitud = valorUsuario != null && valorUsuario.getValor() != null ? valorUsuario.getValor() : 14;
+        ValorInteger valor = new ValorInteger(
+                EnumParametroIndicadorSalida.LONGITUD_ATR_PIVOTS_SALIDA.getEtiqueta(),
+                EnumTipoValor.INTEGER,
+                longitud);
+        return new ParametroIndicadorSalida(
+                EnumParametroIndicadorSalida.LONGITUD_ATR_PIVOTS_SALIDA,
+                EnumParametroIndicadorSalida.LONGITUD_ATR_PIVOTS_SALIDA.getEtiqueta(),
+                valor,
+                new ArrayList<>());
+    }
+
+    // Cuantos anios de velas D1 traer para buscar pivotes -- separado del
+    // timeframe: el timeframe dice la escala de la vela, esto dice cuanto
+    // historial escanear.
+    private ParametroIndicadorSalida crearParametroAniosHistorico(ValorInteger valorUsuario) {
+        Integer anios = valorUsuario != null && valorUsuario.getValor() != null ? valorUsuario.getValor() : 5;
+        ValorInteger valor = new ValorInteger(
+                EnumParametroIndicadorSalida.ANIOS_HISTORICO_PIVOTS_SALIDA.getEtiqueta(),
+                EnumTipoValor.INTEGER,
+                anios);
+        return new ParametroIndicadorSalida(
+                EnumParametroIndicadorSalida.ANIOS_HISTORICO_PIVOTS_SALIDA,
+                EnumParametroIndicadorSalida.ANIOS_HISTORICO_PIVOTS_SALIDA.getEtiqueta(),
+                valor,
+                new ArrayList<>());
+    }
+
+    // Cuantos niveles de pivote devolver por lado (soporte/resistencia) --
+    // equivalente a number_pivots en PivotsAlpaca. 1 alcanza para una sola
+    // posicion abierta (el pivote mas cercano a cada lado); mayor a 1 sirve
+    // para elegir un SL/TP mas conservador entre varios candidatos.
+    private ParametroIndicadorSalida crearParametroNumeroPivotes(ValorInteger valorUsuario) {
+        Integer numero = valorUsuario != null && valorUsuario.getValor() != null ? valorUsuario.getValor() : 1;
+        ValorInteger valor = new ValorInteger(
+                EnumParametroIndicadorSalida.NUMERO_PIVOTES_PIVOTS_SALIDA.getEtiqueta(),
+                EnumTipoValor.INTEGER,
+                numero);
+        return new ParametroIndicadorSalida(
+                EnumParametroIndicadorSalida.NUMERO_PIVOTES_PIVOTS_SALIDA,
+                EnumParametroIndicadorSalida.NUMERO_PIVOTES_PIVOTS_SALIDA.getEtiqueta(),
+                valor,
+                new ArrayList<>());
+    }
+
     @Override
     public List<ResultadoValidacionIndicadorSalida> validarValoresSeleccionados(
             Map<EnumParametroIndicadorSalida, Valor> valoresSeleccionados) {
@@ -139,15 +205,14 @@ public class IndicadorSalidaFactoryPivots implements IIndicadorSalidaFactory {
             }
         }
 
-        Valor longitudVelas = valoresSeleccionados.get(EnumParametroIndicadorSalida.LONGITUD_VELAS_PIVOTS_SALIDA);
-        if (longitudVelas instanceof ValorInteger valorInteger
-                && (valorInteger.getValor() == null
-                        || valorInteger.getValor() < LONGITUD_VELAS_MIN
-                        || valorInteger.getValor() > LONGITUD_VELAS_MAX)) {
-            errores.add(new ResultadoValidacionIndicadorSalida(this.enumIndicadorSalida,
-                    EnumParametroIndicadorSalida.LONGITUD_VELAS_PIVOTS_SALIDA,
-                    "validation.parameter.invalid.range", LONGITUD_VELAS_MIN, LONGITUD_VELAS_MAX));
-        }
+        this.validarRangoInteger(errores, valoresSeleccionados, EnumParametroIndicadorSalida.LONGITUD_VELAS_PIVOTS_SALIDA,
+                LONGITUD_VELAS_MIN, LONGITUD_VELAS_MAX);
+        this.validarRangoInteger(errores, valoresSeleccionados, EnumParametroIndicadorSalida.LONGITUD_ATR_PIVOTS_SALIDA,
+                LONGITUD_ATR_MIN, LONGITUD_ATR_MAX);
+        this.validarRangoInteger(errores, valoresSeleccionados, EnumParametroIndicadorSalida.ANIOS_HISTORICO_PIVOTS_SALIDA,
+                ANIOS_HISTORICO_MIN, ANIOS_HISTORICO_MAX);
+        this.validarRangoInteger(errores, valoresSeleccionados, EnumParametroIndicadorSalida.NUMERO_PIVOTES_PIVOTS_SALIDA,
+                NUMERO_PIVOTES_MIN, NUMERO_PIVOTES_MAX);
 
         Valor slipRatio = valoresSeleccionados.get(EnumParametroIndicadorSalida.SLIP_RATIO_PIVOTS_SALIDA);
         if (slipRatio instanceof ValorFloat valorFloat
@@ -160,5 +225,16 @@ public class IndicadorSalidaFactoryPivots implements IIndicadorSalidaFactory {
         }
 
         return errores;
+    }
+
+    private void validarRangoInteger(List<ResultadoValidacionIndicadorSalida> errores,
+            Map<EnumParametroIndicadorSalida, Valor> valoresSeleccionados,
+            EnumParametroIndicadorSalida enumParametro, int min, int max) {
+        Valor valor = valoresSeleccionados.get(enumParametro);
+        if (valor instanceof ValorInteger valorInteger
+                && (valorInteger.getValor() == null || valorInteger.getValor() < min || valorInteger.getValor() > max)) {
+            errores.add(new ResultadoValidacionIndicadorSalida(this.enumIndicadorSalida, enumParametro,
+                    "validation.parameter.invalid.range", min, max));
+        }
     }
 }
