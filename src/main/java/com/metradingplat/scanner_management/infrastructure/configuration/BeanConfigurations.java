@@ -5,10 +5,12 @@ import com.metradingplat.scanner_management.application.output.GestionarEscanerG
 import com.metradingplat.scanner_management.application.output.GestionarEstadoEscanerGatewayIntPort;
 import com.metradingplat.scanner_management.application.output.GestionarFiltroGatewayIntPort;
 import com.metradingplat.scanner_management.application.output.GestorEstrategiaFiltroIntPort;
+import com.metradingplat.scanner_management.application.output.GestorEstrategiaIndicadorSalidaIntPort;
 import com.metradingplat.scanner_management.domain.usecases.GestionarCalendarioCUAdapter;
 import com.metradingplat.scanner_management.domain.usecases.GestionarEscanerCUAdapter;
 import com.metradingplat.scanner_management.domain.usecases.GestionarEstadoEscanerCUAdapter;
 import com.metradingplat.scanner_management.domain.usecases.GestionarFiltroCUAdapter;
+import com.metradingplat.scanner_management.domain.usecases.GestionarIndicadorSalidaCUAdapter;
 import com.metradingplat.scanner_management.domain.usecases.GestionarMercadoCUAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,6 +53,13 @@ public class BeanConfigurations {
             FormateadorResultadosIntPort objFormateadorResultadosIntPort) {
         return new GestionarFiltroCUAdapter(objGestionarFiltroGatewayIntPort, objGestionarEscanerGatewayIntPort,
                 objGestorFactoryFiltro, objFormateadorResultadosIntPort);
+    }
+
+    @Bean
+    public GestionarIndicadorSalidaCUAdapter gestionarIndicadorSalidaCUIntPort(
+            GestorEstrategiaIndicadorSalidaIntPort objGestorFactoryIndicadorSalida,
+            FormateadorResultadosIntPort objFormateadorResultadosIntPort) {
+        return new GestionarIndicadorSalidaCUAdapter(objGestorFactoryIndicadorSalida, objFormateadorResultadosIntPort);
     }
 
     @Bean

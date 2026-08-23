@@ -20,6 +20,8 @@ import com.metradingplat.scanner_management.infrastructure.input.controllerGesti
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.OpcionValorDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ParametroDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorDTORespuesta;
+import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarIndicadorSalida.DTOAnswer.IndicadorSalidaDtoRespuesta;
+import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarIndicadorSalida.DTOAnswer.ParametroIndicadorSalidaDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarMercado.DTOAnswer.MercadoDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorCondicionalDTORespuesta;
 
@@ -203,6 +205,49 @@ public class FuenteMensajesImplAdapter implements FuenteMensajesIntPort {
             return Collections.emptyList();
         return objetos.stream()
                 .map(this::internacionalizarValor)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public IndicadorSalidaDtoRespuesta internacionalizarIndicadorSalida(IndicadorSalidaDtoRespuesta objeto) {
+        if (objeto == null || objeto.getEnumIndicadorSalida() == null)
+            return objeto;
+
+        Locale locale = this.getLocale();
+        objeto.setEtiquetaNombre(this.obtenerMensaje(objeto.getEnumIndicadorSalida().getEtiquetaNombre(), locale));
+        objeto.setEtiquetaDescripcion(
+                this.obtenerMensaje(objeto.getEnumIndicadorSalida().getEtiquetaDescripcion(), locale));
+        objeto.setParametros(this.internacionalizarParametrosIndicadorSalida(objeto.getParametros()));
+        return objeto;
+    }
+
+    @Override
+    public List<IndicadorSalidaDtoRespuesta> internacionalizarIndicadoresSalida(
+            List<IndicadorSalidaDtoRespuesta> objetos) {
+        if (objetos == null || objetos.isEmpty())
+            return Collections.emptyList();
+        return objetos.stream()
+                .map(this::internacionalizarIndicadorSalida)
+                .collect(Collectors.toList());
+    }
+
+    private ParametroIndicadorSalidaDTORespuesta internacionalizarParametroIndicadorSalida(
+            ParametroIndicadorSalidaDTORespuesta objeto) {
+        if (objeto == null || objeto.getEnumParametroIndicadorSalida() == null)
+            return objeto;
+        objeto.setEtiqueta(this.obtenerMensaje(objeto.getEnumParametroIndicadorSalida().getEtiqueta(),
+                this.getLocale()));
+        objeto.setObjValorSeleccionado(this.internacionalizarValor(objeto.getObjValorSeleccionado()));
+        objeto.setOpciones(this.internacionalizarValores(objeto.getOpciones()));
+        return objeto;
+    }
+
+    private List<ParametroIndicadorSalidaDTORespuesta> internacionalizarParametrosIndicadorSalida(
+            List<ParametroIndicadorSalidaDTORespuesta> objetos) {
+        if (objetos == null || objetos.isEmpty())
+            return Collections.emptyList();
+        return objetos.stream()
+                .map(this::internacionalizarParametroIndicadorSalida)
                 .collect(Collectors.toList());
     }
 }

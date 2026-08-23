@@ -9,6 +9,7 @@ import com.metradingplat.scanner_management.infrastructure.input.controllerGesti
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.FiltroDtoRespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ParametroDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarFiltro.DTOAnswer.ValorDTORespuesta;
+import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarIndicadorSalida.DTOAnswer.IndicadorSalidaDtoRespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarMercado.DTOAnswer.MercadoDTORespuesta;
 
 public interface FuenteMensajesIntPort {
@@ -49,4 +50,9 @@ public interface FuenteMensajesIntPort {
     ValorDTORespuesta internacionalizarValor(ValorDTORespuesta objeto);
 
     List<ValorDTORespuesta> internacionalizarValores(List<ValorDTORespuesta> objetos);
+
+    // Indicadores de salida (stop loss / take profit)
+    IndicadorSalidaDtoRespuesta internacionalizarIndicadorSalida(IndicadorSalidaDtoRespuesta objeto);
+
+    List<IndicadorSalidaDtoRespuesta> internacionalizarIndicadoresSalida(List<IndicadorSalidaDtoRespuesta> objetos);
 }
