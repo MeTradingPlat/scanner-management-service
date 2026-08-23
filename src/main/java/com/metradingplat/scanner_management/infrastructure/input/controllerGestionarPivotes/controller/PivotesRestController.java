@@ -1,6 +1,7 @@
 package com.metradingplat.scanner_management.infrastructure.input.controllerGestionarPivotes.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import com.metradingplat.scanner_management.application.input.GestionarPivotesCU
 import com.metradingplat.scanner_management.domain.models.PivotesEncontrados;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarPivotes.DTOAnswer.PivotLevelDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarPivotes.DTOAnswer.PivotesDTORespuesta;
+import com.metradingplat.scanner_management.infrastructure.output.comunicacionexterna.PivotesNoDisponiblesException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,15 +33,20 @@ public class PivotesRestController {
     private final GestionarPivotesCUIntPort objGestionarPivotesCUInt;
 
     @GetMapping("/{symbol}")
-    public ResponseEntity<PivotesDTORespuesta> obtenerPivots(
+    public ResponseEntity<?> obtenerPivots(
             @PathVariable String symbol,
             @RequestParam(defaultValue = "14") int atrLength,
             @RequestParam(defaultValue = "0.1") float slipRatioPct,
             @RequestParam(defaultValue = "2") int longitudVelas,
             @RequestParam(defaultValue = "5") int aniosHistorico,
             @RequestParam(defaultValue = "1") int numeroPivotes) {
-        PivotesEncontrados pivotes = this.objGestionarPivotesCUInt.obtenerPivots(
-                symbol, atrLength, slipRatioPct, longitudVelas, aniosHistorico, numeroPivotes);
+        PivotesEncontrados pivotes;
+        try {
+            pivotes = this.objGestionarPivotesCUInt.obtenerPivots(
+                    symbol, atrLength, slipRatioPct, longitudVelas, aniosHistorico, numeroPivotes);
+        } catch (PivotesNoDisponiblesException e) {
+            return ResponseEntity.status(502).body(Map.of("mensaje", e.getMessage()));
+        }
         if (pivotes == null) {
             return ResponseEntity.noContent().build();
         }

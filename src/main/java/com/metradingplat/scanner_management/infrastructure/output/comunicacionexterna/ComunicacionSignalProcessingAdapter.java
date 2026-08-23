@@ -119,16 +119,20 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
             pivotes.setSupports(mapearNivelesPivote((List<Map<String, Object>>) respuesta.get("supports")));
             return pivotes;
         } catch (org.springframework.web.client.HttpStatusCodeException e) {
-            // Captura aparte de HttpStatusCodeException para loguear el body real
-            // (ej. el detail de la HTTPException de FastAPI) -- antes solo se veia
-            // "404 Not Found" o "500 Internal Server Error" sin ninguna pista de
-            // la causa real, indistinguible de "sin historial suficiente" en logs.
+            // Antes esto devolvia null (204 sin cuerpo para el cliente) --
+            // indistinguible entre "sin historial suficiente" y un 500 real, y
+            // sin acceso a los logs del servidor era invisible por completo.
+            // Ahora propaga el detail real de signal-processing hasta la
+            // respuesta HTTP, visible con un simple curl.
+            String detalle = e.getResponseBodyAsString();
             log.error("[SIGNAL-PROC-ADAPTER] ERROR consultando pivots de {}: status={} body={}",
-                    symbol, e.getStatusCode(), e.getResponseBodyAsString());
-            return null;
+                    symbol, e.getStatusCode(), detalle);
+            throw new PivotesNoDisponiblesException(
+                    "signal-processing respondio " + e.getStatusCode() + ": " + detalle);
         } catch (Exception e) {
             log.error("[SIGNAL-PROC-ADAPTER] ERROR consultando pivots de {}: {}", symbol, e.getMessage());
-            return null;
+            throw new PivotesNoDisponiblesException(
+                    "No se pudo consultar signal-processing: " + e.getMessage());
         }
     }
 
