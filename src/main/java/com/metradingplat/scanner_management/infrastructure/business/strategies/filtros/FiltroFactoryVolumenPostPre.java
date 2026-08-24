@@ -5,6 +5,7 @@ import com.metradingplat.scanner_management.domain.enums.EnumFiltro;
 import com.metradingplat.scanner_management.domain.enums.EnumParametro;
 import com.metradingplat.scanner_management.domain.enums.EnumTipoValor;
 import com.metradingplat.scanner_management.domain.enums.valores.EnumCondicional;
+import com.metradingplat.scanner_management.domain.enums.valores.EnumTipoVolumenPostPre;
 import com.metradingplat.scanner_management.domain.enums.valores.IEnumValores;
 import com.metradingplat.scanner_management.domain.models.CategoriaFiltro;
 import com.metradingplat.scanner_management.domain.models.Filtro;
@@ -73,9 +74,31 @@ public class FiltroFactoryVolumenPostPre implements IFiltroFactory {
         List<Parametro> parametros = new ArrayList<>();
         parametros.add(
                 this.crearParametroCondicion((ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
+        parametros.add(
+                this.crearParametroTipoVolumen(
+                        (ValorString) valoresSeleccionados.get(EnumParametro.TIPO_VOLUMEN)));
 
         filtro.setParametros(parametros);
         return filtro;
+    }
+
+    // TIPO_VOLUMEN elige sobre que volumen se aplica la condicion: PRE
+    // (solo pre-market), POST (solo post-market) o AMBOS (la suma, default
+    // historico). Sin esta opcion el filtro siempre sumaba pre+post y no
+    // habia forma de filtrar solo uno -- confirmado por el usuario el
+    // 2026-08-24.
+    private Parametro crearParametroTipoVolumen(ValorString valorUsuario) {
+        EnumTipoValor enumTipoValor = EnumTipoValor.STRING;
+        List<Valor> opciones = this.obtenerOpciones(EnumTipoVolumenPostPre.values());
+        EnumTipoVolumenPostPre enumValor = valorUsuario != null
+                ? EnumTipoVolumenPostPre.valueOf(valorUsuario.getValor())
+                : EnumTipoVolumenPostPre.AMBOS;
+        ValorString valor = new ValorString(
+                enumValor.getEtiqueta(),
+                enumTipoValor,
+                enumValor.name());
+        return new Parametro(EnumParametro.TIPO_VOLUMEN, EnumParametro.TIPO_VOLUMEN.getEtiqueta(), valor,
+                opciones);
     }
 
     private List<Valor> obtenerOpciones(IEnumValores[] enumValores) {
@@ -107,6 +130,12 @@ public class FiltroFactoryVolumenPostPre implements IFiltroFactory {
                 .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
                         valoresSeleccionados.get(EnumParametro.CONDICION), 0.0F,
                         100_000_000.0F)
+                .ifPresent(errores::add);
+
+        this.objValidador
+                .validarString(this.enumFiltro, EnumParametro.TIPO_VOLUMEN,
+                        valoresSeleccionados.get(EnumParametro.TIPO_VOLUMEN),
+                        EnumTipoVolumenPostPre.class)
                 .ifPresent(errores::add);
 
         return errores;
