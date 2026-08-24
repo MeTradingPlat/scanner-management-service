@@ -1,5 +1,6 @@
 package com.metradingplat.scanner_management.infrastructure.configuration;
 
+import com.metradingplat.scanner_management.application.input.GestionarEstadoEscanerCUIntPort;
 import com.metradingplat.scanner_management.application.output.FormateadorResultadosIntPort;
 import com.metradingplat.scanner_management.application.output.GestionarEscanerGatewayIntPort;
 import com.metradingplat.scanner_management.application.output.GestionarEstadoEscanerGatewayIntPort;
@@ -29,9 +30,10 @@ public class BeanConfigurations {
             GestionarEscanerGatewayIntPort objGestionarEscanerGatewayIntPort,
             GestionarEstadoEscanerGatewayIntPort objGestionarEstadoEscanerGateWayIntPort,
             FormateadorResultadosIntPort objFormateadorResultadosIntPort,
-            LimpiezaDatosEscanerIntPort objLimpiezaDatosEscaner) {
+            LimpiezaDatosEscanerIntPort objLimpiezaDatosEscaner,
+            GestionarEstadoEscanerCUIntPort objGestionarEstadoEscanerCUIntPort) {
         return new GestionarEscanerCUAdapter(objGestionarEscanerGatewayIntPort, objGestionarEstadoEscanerGateWayIntPort,
-                objFormateadorResultadosIntPort, objLimpiezaDatosEscaner);
+                objFormateadorResultadosIntPort, objLimpiezaDatosEscaner, objGestionarEstadoEscanerCUIntPort);
     }
 
     @Bean
