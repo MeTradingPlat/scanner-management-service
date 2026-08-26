@@ -100,8 +100,8 @@ jobs:
             --network "metradingplat-network" \
             --restart "unless-stopped" \
             --cpus "0.5" \
-            --memory "384m" \
-            --memory-swap "384m" \
+            --memory "512m" \
+            --memory-swap "512m" \
             --label project="metradingplat" \
             --label service="scanner-management-service" \
             -e SPRING_PROFILES_ACTIVE="prod" \
