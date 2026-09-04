@@ -31,9 +31,11 @@ public class BeanConfigurations {
             GestionarEstadoEscanerGatewayIntPort objGestionarEstadoEscanerGateWayIntPort,
             FormateadorResultadosIntPort objFormateadorResultadosIntPort,
             LimpiezaDatosEscanerIntPort objLimpiezaDatosEscaner,
-            GestionarEstadoEscanerCUIntPort objGestionarEstadoEscanerCUIntPort) {
+            GestionarEstadoEscanerCUIntPort objGestionarEstadoEscanerCUIntPort,
+            NotificacionKafkaProducerIntPort objNotificacionProducer) {
         return new GestionarEscanerCUAdapter(objGestionarEscanerGatewayIntPort, objGestionarEstadoEscanerGateWayIntPort,
-                objFormateadorResultadosIntPort, objLimpiezaDatosEscaner, objGestionarEstadoEscanerCUIntPort);
+                objFormateadorResultadosIntPort, objLimpiezaDatosEscaner, objGestionarEstadoEscanerCUIntPort,
+                objNotificacionProducer);
     }
 
     @Bean

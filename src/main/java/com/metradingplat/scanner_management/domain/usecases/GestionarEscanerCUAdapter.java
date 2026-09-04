@@ -8,6 +8,7 @@ import com.metradingplat.scanner_management.application.output.FormateadorResult
 import com.metradingplat.scanner_management.application.output.GestionarEscanerGatewayIntPort;
 import com.metradingplat.scanner_management.application.output.GestionarEstadoEscanerGatewayIntPort;
 import com.metradingplat.scanner_management.application.output.LimpiezaDatosEscanerIntPort;
+import com.metradingplat.scanner_management.application.output.NotificacionKafkaProducerIntPort;
 import com.metradingplat.scanner_management.domain.enums.EnumEstadoEscaner;
 import com.metradingplat.scanner_management.domain.models.Escaner;
 
@@ -22,6 +23,7 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
     private final FormateadorResultadosIntPort objFormateadorResultadosIntPort;
     private final LimpiezaDatosEscanerIntPort objLimpiezaDatosEscaner;
     private final GestionarEstadoEscanerCUIntPort objGestionarEstadoEscanerCUIntPort;
+    private final NotificacionKafkaProducerIntPort objNotificacionProducer;
 
     @Override
     public Escaner crearEscaner(Escaner objEscaner) {
@@ -34,6 +36,13 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
         Escaner escanerGuardado = this.objGestionarEscanerGatewayIntPort.crearEscaner(objEscaner);
         escanerGuardado.setObjEstado(this.objGestionarEstadoEscanerGatewayIntPort
                 .cambiarEstadoDeEscaner(escanerGuardado, EnumEstadoEscaner.DETENIDO));
+        // Notifica a todos los clientes conectados (viewers con la lista
+        // abierta) que hay un escaner nuevo -- sin esto, el unico camino para
+        // verlo era recargar la pagina (ver notificacion-sse.service.ts,
+        // handleStateChange solo actualizaba escaneres YA presentes en la
+        // lista local, nunca agregaba uno nuevo).
+        publicarCambioLista(escanerGuardado.getIdEscaner(), escanerGuardado.getNombre(), "CREADO",
+                "Escaner creado", "{\"evento\":\"SCANNER_CREADO\"}");
         return escanerGuardado;
     }
 
@@ -121,9 +130,14 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
             this.objFormateadorResultadosIntPort.errorEntidadNoExiste("validation.scanner.id.notFound", idEscaner);
         }
         validarEstadoPermiteEliminacion(idEscaner);
+        Escaner escaner = this.objGestionarEscanerGatewayIntPort.obtenerEscanerPorId(idEscaner);
         // Limpiar datos relacionados en otros servicios antes de eliminar
         this.objLimpiezaDatosEscaner.eliminarLogsPorEscaner(idEscaner);
         Boolean respuesta = this.objGestionarEscanerGatewayIntPort.eliminarEscaner(idEscaner);
+        // Mismo motivo que en crearEscaner: sin esto, un viewer con la lista
+        // abierta seguia viendo el escaner eliminado hasta recargar.
+        publicarCambioLista(idEscaner, escaner.getNombre(), "ELIMINADO",
+                "Escaner eliminado", "{\"evento\":\"SCANNER_ELIMINADO\"}");
         return respuesta;
     }
 
@@ -134,5 +148,19 @@ public class GestionarEscanerCUAdapter implements GestionarEscanerCUIntPort {
             this.objFormateadorResultadosIntPort.errorEstadoDenegado(
                     "validation.scanner.state.cannotDeleteWhileRunning");
         }
+    }
+
+    // publicarCambioLista reusa el mismo canal SSE que ya usa
+    // GestionarEstadoEscanerCUAdapter para iniciar/detener (tipo=
+    // SCANNER_STATE, metadatos.estadoNuevo) -- "CREADO"/"ELIMINADO" no son
+    // estados reales de EnumEstadoEscaner, son solo el valor que el frontend
+    // lee de metadatos para decidir si agrega o quita la fila de su lista en
+    // memoria (ver scanner-list.ts, handleStateChange) en vez de pisar el
+    // estado real del escaner.
+    private void publicarCambioLista(Long idEscaner, String nombreEscaner, String estadoNuevo, String mensaje,
+            String metadatos) {
+        this.objNotificacionProducer.publicarNotificacion(idEscaner, "SCANNER_STATE", "INFO", mensaje, "SCANNER",
+                metadatos);
+        this.objNotificacionProducer.publicarCambioEstadoEscaner(idEscaner, nombreEscaner, "", estadoNuevo, mensaje);
     }
 }

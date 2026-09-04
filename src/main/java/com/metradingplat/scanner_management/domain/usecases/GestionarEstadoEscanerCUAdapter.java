@@ -80,13 +80,30 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
     @Override
     public EstadoEscaner archivarEscaner(Long id) {
         log.info("[USE-CASE] archivarEscaner - id={}", id);
-        return cambiarEstado(validarEscanerExistente(id), EnumEstadoEscaner.ARCHIVADO);
+        Escaner escaner = validarEscanerExistente(id);
+        String estadoAnterior = escaner.getObjEstado().getEnumEstadoEscaner().name();
+        EstadoEscaner estado = cambiarEstado(escaner, EnumEstadoEscaner.ARCHIVADO);
+        // listarEscaneres() excluye los archivados (ver
+        // GestionarEscanerCUAdapter.listarEscaneres) -- sin notificar, un
+        // viewer con la lista abierta seguia viendo la fila hasta recargar.
+        publicarNotificacionCambioEstado(id, "ARCHIVADO", "Escaner archivado", "{\"evento\":\"SCANNER_ARCHIVADO\"}");
+        publicarEventoEstado(id, escaner.getNombre(), estadoAnterior, "ARCHIVADO", "Archivado por usuario");
+        return estado;
     }
 
     @Override
     public EstadoEscaner desarchivarEscaner(Long id) {
         log.info("[USE-CASE] desarchivarEscaner - id={}", id);
-        return cambiarEstado(validarEscanerExistente(id), EnumEstadoEscaner.DESARCHIVADO);
+        Escaner escaner = validarEscanerExistente(id);
+        String estadoAnterior = escaner.getObjEstado().getEnumEstadoEscaner().name();
+        EstadoEscaner estado = cambiarEstado(escaner, EnumEstadoEscaner.DESARCHIVADO);
+        // El frontend no tiene este escaner en memoria (estaba excluido de la
+        // lista mientras estaba archivado) -- ver scanner-list.ts, dispara un
+        // refresco completo en vez de intentar parchear una fila que no
+        // tiene.
+        publicarNotificacionCambioEstado(id, "DESARCHIVADO", "Escaner desarchivado", "{\"evento\":\"SCANNER_DESARCHIVADO\"}");
+        publicarEventoEstado(id, escaner.getNombre(), estadoAnterior, "DESARCHIVADO", "Desarchivado por usuario");
+        return estado;
     }
 
     private Escaner validarEscanerExistente(Long id) {
