@@ -46,7 +46,13 @@ public class PivotesRestController {
             pivotes = this.objGestionarPivotesCUInt.obtenerPivots(
                     symbol, atrLength, slipRatioPct, longitudVelas, aniosHistorico, numeroPivotes, priceReference);
         } catch (PivotesNoDisponiblesException e) {
-            return ResponseEntity.status(502).body(Map.of("mensaje", e.getMessage()));
+            // 404, no 502: Cloudflare intercepta 502/504/52x en el dominio
+            // publico y sirve su propia pagina de error generica en vez de
+            // esta respuesta -- sin el body ni los headers CORS del origen,
+            // lo que el navegador reporta como bloqueo CORS aunque el
+            // backend respondio bien (confirmado en vivo el 2026-09-07 con
+            // priceReference=open fuera de horario de mercado).
+            return ResponseEntity.status(404).body(Map.of("mensaje", e.getMessage()));
         }
         if (pivotes == null) {
             return ResponseEntity.noContent().build();
