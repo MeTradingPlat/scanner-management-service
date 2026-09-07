@@ -1,7 +1,6 @@
 package com.metradingplat.scanner_management.infrastructure.input.controllerGestionarPivotes.controller;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import com.metradingplat.scanner_management.application.input.GestionarPivotesCU
 import com.metradingplat.scanner_management.domain.models.PivotesEncontrados;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarPivotes.DTOAnswer.PivotLevelDTORespuesta;
 import com.metradingplat.scanner_management.infrastructure.input.controllerGestionarPivotes.DTOAnswer.PivotesDTORespuesta;
-import com.metradingplat.scanner_management.infrastructure.output.comunicacionexterna.PivotesNoDisponiblesException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +21,8 @@ import lombok.RequiredArgsConstructor;
  * Proxy hacia signal-processing-service (no expuesto en el gateway, ver
  * application.yml del gateway) -- mismo patron que CalendarioRestController.
  * Endpoint de exploracion para el chart de Activos: no persiste nada ni se
- * asocia a ningun escaner todavia.
+ * asocia a ningun escaner todavia. PivotesNoDisponiblesException la traduce
+ * el RestApiExceptionHandler centralizado (404), no un catch local.
  */
 @RestController
 @RequestMapping("/escaner/pivots")
@@ -41,19 +40,8 @@ public class PivotesRestController {
             @RequestParam(defaultValue = "4") int aniosHistorico,
             @RequestParam(defaultValue = "5") int numeroPivotes,
             @RequestParam(defaultValue = "live") String priceReference) {
-        PivotesEncontrados pivotes;
-        try {
-            pivotes = this.objGestionarPivotesCUInt.obtenerPivots(
-                    symbol, atrLength, slipRatioPct, longitudVelas, aniosHistorico, numeroPivotes, priceReference);
-        } catch (PivotesNoDisponiblesException e) {
-            // 404, no 502: Cloudflare intercepta 502/504/52x en el dominio
-            // publico y sirve su propia pagina de error generica en vez de
-            // esta respuesta -- sin el body ni los headers CORS del origen,
-            // lo que el navegador reporta como bloqueo CORS aunque el
-            // backend respondio bien (confirmado en vivo el 2026-09-07 con
-            // priceReference=open fuera de horario de mercado).
-            return ResponseEntity.status(404).body(Map.of("mensaje", e.getMessage()));
-        }
+        PivotesEncontrados pivotes = this.objGestionarPivotesCUInt.obtenerPivots(
+                symbol, atrLength, slipRatioPct, longitudVelas, aniosHistorico, numeroPivotes, priceReference);
         if (pivotes == null) {
             return ResponseEntity.noContent().build();
         }

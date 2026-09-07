@@ -9,6 +9,7 @@ import com.metradingplat.scanner_management.infrastructure.output.exceptionsCont
 import com.metradingplat.scanner_management.infrastructure.output.exceptionsController.exceptionStructure.Error;
 import com.metradingplat.scanner_management.infrastructure.output.exceptionsController.exceptionStructure.ErrorUtils;
 import com.metradingplat.scanner_management.infrastructure.output.exceptionsController.ownExceptions.*;
+import com.metradingplat.scanner_management.infrastructure.output.comunicacionexterna.PivotesNoDisponiblesException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -164,6 +165,21 @@ public class RestApiExceptionHandler {
         return createErrorResponse(
                 CodigoError.VIOLACION_REGLA_DE_NEGOCIO,
                 HttpStatus.BAD_REQUEST,
+                req,
+                ex.getMessage(),
+                ex.getArgs());
+    }
+
+    // signal-processing-service no pudo calcular pivots para el simbolo
+    // (mercado sin abrir hoy, sin historial suficiente, etc.) -- el detail
+    // real ya quedo en el log de ComunicacionSignalProcessingAdapter, aca
+    // solo se traduce la llave i18n generica del mensaje.
+    @ExceptionHandler(PivotesNoDisponiblesException.class)
+    public ResponseEntity<Error> handlePivotesNoDisponiblesException(PivotesNoDisponiblesException ex,
+            HttpServletRequest req) {
+        return createErrorResponse(
+                CodigoError.PIVOTES_NO_DISPONIBLES,
+                HttpStatus.NOT_FOUND,
                 req,
                 ex.getMessage(),
                 ex.getArgs());

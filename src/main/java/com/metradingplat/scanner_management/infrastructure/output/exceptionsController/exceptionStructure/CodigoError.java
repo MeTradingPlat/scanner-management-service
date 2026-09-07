@@ -15,7 +15,8 @@ public enum CodigoError {
     CREDENCIALES_INVALIDAS("GC-0006", "error.credentials.invalid"),
     USUARIO_DESHABILITADO("GC-0007", "error.user.disabled"),
     TOKEN_INVALIDO("GC-0008", "error.token.invalid"),
-    TIPO_DE_ARGUMENTO_INVALIDO("GC-0009", "validation.type.invalid");
+    TIPO_DE_ARGUMENTO_INVALIDO("GC-0009", "validation.type.invalid"),
+    PIVOTES_NO_DISPONIBLES("GC-0010", "error.pivots.notAvailable");
 
     private final String codigo;
     private final String llaveMensaje;

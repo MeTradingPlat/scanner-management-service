@@ -123,17 +123,15 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
             // Antes esto devolvia null (204 sin cuerpo para el cliente) --
             // indistinguible entre "sin historial suficiente" y un 500 real, y
             // sin acceso a los logs del servidor era invisible por completo.
-            // Ahora propaga el detail real de signal-processing hasta la
-            // respuesta HTTP, visible con un simple curl.
-            String detalle = e.getResponseBodyAsString();
+            // El detail real de signal-processing queda en el log (visible con
+            // docker logs), no en la respuesta HTTP -- ver PivotesNoDisponiblesException
+            // sobre por que el mensaje al cliente es una llave i18n generica.
             log.error("[SIGNAL-PROC-ADAPTER] ERROR consultando pivots de {}: status={} body={}",
-                    symbol, e.getStatusCode(), detalle);
-            throw new PivotesNoDisponiblesException(
-                    "signal-processing respondio " + e.getStatusCode() + ": " + detalle);
+                    symbol, e.getStatusCode(), e.getResponseBodyAsString());
+            throw new PivotesNoDisponiblesException();
         } catch (Exception e) {
             log.error("[SIGNAL-PROC-ADAPTER] ERROR consultando pivots de {}: {}", symbol, e.getMessage());
-            throw new PivotesNoDisponiblesException(
-                    "No se pudo consultar signal-processing: " + e.getMessage());
+            throw new PivotesNoDisponiblesException();
         }
     }
 
