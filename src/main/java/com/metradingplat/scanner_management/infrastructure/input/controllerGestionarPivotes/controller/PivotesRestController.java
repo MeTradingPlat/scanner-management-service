@@ -39,11 +39,12 @@ public class PivotesRestController {
             @RequestParam(defaultValue = "0.1") float slipRatioPct,
             @RequestParam(defaultValue = "2") int longitudVelas,
             @RequestParam(defaultValue = "4") int aniosHistorico,
-            @RequestParam(defaultValue = "5") int numeroPivotes) {
+            @RequestParam(defaultValue = "5") int numeroPivotes,
+            @RequestParam(defaultValue = "live") String priceReference) {
         PivotesEncontrados pivotes;
         try {
             pivotes = this.objGestionarPivotesCUInt.obtenerPivots(
-                    symbol, atrLength, slipRatioPct, longitudVelas, aniosHistorico, numeroPivotes);
+                    symbol, atrLength, slipRatioPct, longitudVelas, aniosHistorico, numeroPivotes, priceReference);
         } catch (PivotesNoDisponiblesException e) {
             return ResponseEntity.status(502).body(Map.of("mensaje", e.getMessage()));
         }

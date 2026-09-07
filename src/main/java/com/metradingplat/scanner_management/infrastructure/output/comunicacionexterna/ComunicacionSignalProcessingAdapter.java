@@ -101,13 +101,14 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
     @Override
     @SuppressWarnings("unchecked")
     public PivotesEncontrados obtenerPivots(String symbol, int atrLength, float slipRatioPct, int longitudVelas,
-            int aniosHistorico, int numeroPivotes) {
+            int aniosHistorico, int numeroPivotes, String priceReference) {
         String url = UriComponentsBuilder.fromHttpUrl(signalProcessingUrl + "/signal-processing/pivots/" + symbol)
                 .queryParam("atr_length", atrLength)
                 .queryParam("slip_ratio_pct", slipRatioPct)
                 .queryParam("longitud_velas", longitudVelas)
                 .queryParam("anios_historico", aniosHistorico)
                 .queryParam("numero_pivotes", numeroPivotes)
+                .queryParam("price_reference", priceReference)
                 .toUriString();
         try {
             Map<String, Object> respuesta = restTemplate.getForObject(url, Map.class);

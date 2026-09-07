@@ -12,5 +12,5 @@ public interface FuenteMensajesSignalProcessingIntPort {
     EstadoCalendario obtenerEstadoCalendario();
 
     PivotesEncontrados obtenerPivots(String symbol, int atrLength, float slipRatioPct, int longitudVelas,
-            int aniosHistorico, int numeroPivotes);
+            int aniosHistorico, int numeroPivotes, String priceReference);
 }
