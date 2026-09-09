@@ -12,8 +12,8 @@ public class GestionarPivotesCUAdapter implements GestionarPivotesCUIntPort {
 
     @Override
     public PivotesEncontrados obtenerPivots(String symbol, int atrLength, float slipRatioPct, int longitudVelas,
-            int aniosHistorico, int numeroPivotes, String priceReference) {
+            int aniosHistorico, int numeroPivotes, String priceReference, Float explicitPrice) {
         return this.objFuenteMensajesSignalProcessing.obtenerPivots(
-                symbol, atrLength, slipRatioPct, longitudVelas, aniosHistorico, numeroPivotes, priceReference);
+                symbol, atrLength, slipRatioPct, longitudVelas, aniosHistorico, numeroPivotes, priceReference, explicitPrice);
     }
 }

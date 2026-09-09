@@ -101,15 +101,21 @@ public class ComunicacionSignalProcessingAdapter implements FuenteMensajesSignal
     @Override
     @SuppressWarnings("unchecked")
     public PivotesEncontrados obtenerPivots(String symbol, int atrLength, float slipRatioPct, int longitudVelas,
-            int aniosHistorico, int numeroPivotes, String priceReference) {
-        String url = UriComponentsBuilder.fromHttpUrl(signalProcessingUrl + "/signal-processing/pivots/" + symbol)
+            int aniosHistorico, int numeroPivotes, String priceReference, Float explicitPrice) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(signalProcessingUrl + "/signal-processing/pivots/" + symbol)
                 .queryParam("atr_length", atrLength)
                 .queryParam("slip_ratio_pct", slipRatioPct)
                 .queryParam("longitud_velas", longitudVelas)
                 .queryParam("anios_historico", aniosHistorico)
                 .queryParam("numero_pivotes", numeroPivotes)
-                .queryParam("price_reference", priceReference)
-                .toUriString();
+                .queryParam("price_reference", priceReference);
+        // Solo se manda si vino (priceReference="signal") -- signal-processing
+        // trata su ausencia como "la senal no trae precio" (404), no como un
+        // error de parseo.
+        if (explicitPrice != null) {
+            builder = builder.queryParam("explicit_price", explicitPrice);
+        }
+        String url = builder.toUriString();
         try {
             Map<String, Object> respuesta = restTemplate.getForObject(url, Map.class);
             PivotesEncontrados pivotes = new PivotesEncontrados();
