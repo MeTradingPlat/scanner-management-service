@@ -42,6 +42,12 @@ public class FiltroEntity {
     @JoinColumn(name = "idscaner", nullable = false)
     private EscanerEntity objEscaner;
 
+    // Ver Filtro.revisionTiempoReal (dominio). columnDefinition con DEFAULT
+    // explicito por la misma razon que permitir_multiples_senales en
+    // EscanerEntity: ddl-auto=update sin Flyway/Liquibase.
+    @Column(name = "revision_tiempo_real", nullable = false, columnDefinition = "boolean default false")
+    private boolean revisionTiempoReal;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "objFiltro", cascade = { CascadeType.PERSIST, CascadeType.REMOVE,
             CascadeType.MERGE })
     private List<ParametroEntity> parametros = new ArrayList<>();

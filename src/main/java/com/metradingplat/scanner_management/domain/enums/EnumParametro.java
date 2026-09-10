@@ -73,6 +73,28 @@ public enum EnumParametro {
     TIMEFRAME_PIVOTS("parameter.pivots.timeframe"),
     MINUTOS_TRANSCURRIDOS("parameter.minutosInMarket.minutosTranscurridos"),
 
+    // Parámetros de Order Block + Imbalance
+    TIMEFRAME_ORDER_BLOCK_IMBALANCE("parameter.orderBlockImbalance.timeframe"),
+    LOOKBACK_VELAS_ORDER_BLOCK_IMBALANCE("parameter.orderBlockImbalance.lookbackVelas"),
+    DIRECCION_ORDER_BLOCK_IMBALANCE("parameter.orderBlockImbalance.direccion"),
+
+    // Parámetros de Vela de Toma de Liquidez
+    TIMEFRAME_LIQUIDITY_GRAB_CANDLE("parameter.liquidityGrabCandle.timeframe"),
+    LOOKBACK_VELAS_LIQUIDITY_GRAB_CANDLE("parameter.liquidityGrabCandle.lookbackVelas"),
+    PROPORCION_MECHA_CUERPO_LIQUIDITY_GRAB_CANDLE("parameter.liquidityGrabCandle.proporcionMechaCuerpo"),
+    DIRECCION_LIQUIDITY_GRAB_CANDLE("parameter.liquidityGrabCandle.direccion"),
+
+    // Parámetros de Aceleración-Desaceleración
+    TIMEFRAME_ACCELERATION_DECELERATION("parameter.accelerationDeceleration.timeframe"),
+    VELAS_ACELERACION_ACCELERATION_DECELERATION("parameter.accelerationDeceleration.velasAceleracion"),
+    VELAS_DESACELERACION_ACCELERATION_DECELERATION("parameter.accelerationDeceleration.velasDesaceleracion"),
+    PROPORCION_DESACELERACION_ACCELERATION_DECELERATION("parameter.accelerationDeceleration.proporcionDesaceleracion"),
+
+    // Parámetros de Vela de Confirmación
+    TIMEFRAME_CONFIRMATION_CANDLE("parameter.confirmationCandle.timeframe"),
+    PROPORCION_CUERPO_MINIMA_CONFIRMATION_CANDLE("parameter.confirmationCandle.proporcionCuerpoMinima"),
+    DIRECCION_CONFIRMATION_CANDLE("parameter.confirmationCandle.direccion"),
+
     // Parámetros de Características Fundamentales
     ESTADO_NOTICIA("parameter.noticias.estadoNoticia");
 

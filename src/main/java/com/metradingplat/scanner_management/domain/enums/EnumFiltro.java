@@ -52,6 +52,10 @@ public enum EnumFiltro {
     OPENING_RANGE_BREAKOUT("filter.openingRangeBreakout.name", "filter.openingRangeBreakout.description"),
     PIVOTS("filter.pivots.name", "filter.pivots.description"),
     MINUTOS_IN_MARKET("filter.minutosInMarket.name", "filter.minutosInMarket.description"),
+    ORDER_BLOCK_IMBALANCE("filter.orderBlockImbalance.name", "filter.orderBlockImbalance.description"),
+    LIQUIDITY_GRAB_CANDLE("filter.liquidityGrabCandle.name", "filter.liquidityGrabCandle.description"),
+    ACCELERATION_DECELERATION("filter.accelerationDeceleration.name", "filter.accelerationDeceleration.description"),
+    CONFIRMATION_CANDLE("filter.confirmationCandle.name", "filter.confirmationCandle.description"),
 
     // Categoría: Características Fundamentales
     FLOAT("filter.float.name", "filter.float.description"),

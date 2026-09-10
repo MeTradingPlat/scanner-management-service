@@ -54,6 +54,13 @@ public class EscanerEntity {
     @Column(name = "hora_fin", nullable = false)
     private LocalTime horaFin;
 
+    // columnDefinition con DEFAULT explicito -- sin esto, Hibernate genera un
+    // ALTER TABLE ... NOT NULL sin default que falla contra la tabla
+    // "escaneres" ya poblada en produccion (ddl-auto=update, sin Flyway/
+    // Liquibase que lo resuelva por si solo).
+    @Column(name = "permitir_multiples_senales", nullable = false, columnDefinition = "boolean default false")
+    private boolean permitirMultiplesSenales;
+
     @CreatedDate
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;

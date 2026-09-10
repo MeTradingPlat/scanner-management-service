@@ -39,4 +39,10 @@ public class Escaner {
     private TipoEjecucion objTipoEjecucion;
     private List<Mercado> mercados = new ArrayList<Mercado>();
     private List<Filtro> filtros = new ArrayList<Filtro>();
+
+    // Si es false (default), un simbolo que ya genero una señal hoy para
+    // este escaner queda excluido el resto del dia. Si es true,
+    // signal-processing-service permite volver a señalizarlo cuando
+    // vuelve a calificar tras haber dejado de hacerlo.
+    private boolean permitirMultiplesSenales;
 }

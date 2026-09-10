@@ -69,6 +69,7 @@ public class GestionarEscanerGatewayImplAdapter implements GestionarEscanerGatew
         entity.setDescripcion(escaner.getDescripcion());
         entity.setHoraInicio(escaner.getHoraInicio());
         entity.setHoraFin(escaner.getHoraFin());
+        entity.setPermitirMultiplesSenales(escaner.isPermitirMultiplesSenales());
         TipoEjecucionEntity objTipoEjecucion = this.objTipoEjecucionRepository
                 .findByEnumTipoEjecucion(escaner.getObjTipoEjecucion().getEnumTipoEjecucion())
                 .get();

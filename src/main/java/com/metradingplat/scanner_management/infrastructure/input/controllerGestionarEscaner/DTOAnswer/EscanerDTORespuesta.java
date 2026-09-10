@@ -33,4 +33,5 @@ public class EscanerDTORespuesta {
     private List<FiltroDtoRespuesta> filtros;
     private EstadoEscanerDTORespuesta objEstado;
     private TipoEjecucionDTORespuesta objTipoEjecucion;
+    private boolean permitirMultiplesSenales;
 }

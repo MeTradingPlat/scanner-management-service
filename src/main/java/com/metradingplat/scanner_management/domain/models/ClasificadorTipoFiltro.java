@@ -24,7 +24,11 @@ public final class ClasificadorTipoFiltro {
             EnumFiltro.DISTANCE_FROM_MA,
             EnumFiltro.BACK_TO_EMA_ALERT,
             EnumFiltro.THROUGH_EMA_VWAP_ALERT,
-            EnumFiltro.EMA_VWAP_SUPPORT_RESISTANCE);
+            EnumFiltro.EMA_VWAP_SUPPORT_RESISTANCE,
+            EnumFiltro.ORDER_BLOCK_IMBALANCE,
+            EnumFiltro.LIQUIDITY_GRAB_CANDLE,
+            EnumFiltro.ACCELERATION_DECELERATION,
+            EnumFiltro.CONFIRMATION_CANDLE);
 
     private ClasificadorTipoFiltro() {
     }

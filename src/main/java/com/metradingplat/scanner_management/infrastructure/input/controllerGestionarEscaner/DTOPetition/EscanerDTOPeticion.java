@@ -43,4 +43,6 @@ public class EscanerDTOPeticion {
     @NotEmpty(message = "validation.scanner.market.empty")
     @Valid
     private List<MercadoDTOPeticion> mercados;
+
+    private boolean permitirMultiplesSenales;
 }

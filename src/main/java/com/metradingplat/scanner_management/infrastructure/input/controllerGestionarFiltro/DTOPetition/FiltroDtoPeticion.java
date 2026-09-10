@@ -21,4 +21,6 @@ public class FiltroDtoPeticion {
     @NotNull(message = "validation.filter.parameters.required")
     @Valid
     private List<ParametroDTOPeticion> parametros;
+
+    private boolean revisionTiempoReal;
 }
