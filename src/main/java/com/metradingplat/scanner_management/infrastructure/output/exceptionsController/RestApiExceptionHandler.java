@@ -2,6 +2,7 @@ package com.metradingplat.scanner_management.infrastructure.output.exceptionsCon
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import com.metradingplat.scanner_management.application.output.FuenteMensajesIntPort;
 import com.metradingplat.scanner_management.infrastructure.output.exceptionsController.dto.ValidationErrorDetail;
 import com.metradingplat.scanner_management.infrastructure.output.exceptionsController.dto.ValidationErrorResponse;
@@ -27,12 +28,18 @@ import java.util.Map;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
+@Slf4j
 public class RestApiExceptionHandler {
 
     private final FuenteMensajesIntPort objFuenteMensajes;
 
+    // Sin este log, un 500 generico no dejaba ningun rastro -- confirmado en
+    // vivo el 2026-09-10: GET /escaner/filtro/escaner/9 devolvia GC-0001 sin
+    // una sola linea en el log del contenedor, imposible de diagnosticar sin
+    // agregar logging a mano y volver a desplegar.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Error> handleGenericException(HttpServletRequest req, Exception ex) {
+        log.error("Error no manejado en {} {}: {}", req.getMethod(), req.getRequestURL(), ex.getMessage(), ex);
         return createErrorResponse(
                 CodigoError.ERROR_GENERICO,
                 HttpStatus.INTERNAL_SERVER_ERROR,
