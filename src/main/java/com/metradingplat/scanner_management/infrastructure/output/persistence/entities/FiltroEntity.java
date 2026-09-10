@@ -34,8 +34,11 @@ public class FiltroEntity {
     @Column(name = "id_filtro")
     private Long idFiltro;
 
+    // length=100: mismo margen que ParametroEntity.enumParametro, para no
+    // repetir el mismo problema de "value too long" con un EnumFiltro largo
+    // en el futuro.
     @Enumerated(EnumType.STRING)
-    @Column(name = "enum_filtro", nullable = false, length = 50)
+    @Column(name = "enum_filtro", nullable = false, length = 100)
     private EnumFiltro enumFiltro;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })

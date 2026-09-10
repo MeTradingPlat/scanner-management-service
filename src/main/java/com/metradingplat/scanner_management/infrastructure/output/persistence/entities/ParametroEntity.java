@@ -33,8 +33,12 @@ public class ParametroEntity {
     @Column(name = "id_parametro")
     private Long idParametro;
 
+    // length=100, no 50: PROPORCION_DESACELERACION_ACCELERATION_DECELERATION
+    // (51 caracteres) no entraba en 50 -- confirmado en vivo el 2026-09-10,
+    // "value too long for type character varying(50)" al guardar el primer
+    // escaner con los filtros de Liquidity Inducement.
     @Enumerated(EnumType.STRING)
-    @Column(name = "enum_parametro", nullable = false, length = 50)
+    @Column(name = "enum_parametro", nullable = false, length = 100)
     private EnumParametro enumParametro;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE })
