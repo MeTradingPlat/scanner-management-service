@@ -29,7 +29,8 @@ public final class ClasificadorTipoFiltro {
             EnumFiltro.LIQUIDITY_GRAB_CANDLE,
             EnumFiltro.ACCELERATION_DECELERATION,
             EnumFiltro.CONFIRMATION_CANDLE,
-            EnumFiltro.RANGE_EXTREME_PROXIMITY);
+            EnumFiltro.RANGE_EXTREME_PROXIMITY,
+            EnumFiltro.RANGE_CONFLUENCE_D1_H4_H1);
 
     private ClasificadorTipoFiltro() {
     }

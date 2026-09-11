@@ -101,6 +101,13 @@ public enum EnumParametro {
     PROPORCION_PROXIMIDAD_RANGE_EXTREME_PROXIMITY("parameter.rangeExtremeProximity.proporcionProximidad"),
     DIRECCION_RANGE_EXTREME_PROXIMITY("parameter.rangeExtremeProximity.direccion"),
 
+    // Parametros de Confluencia de Rango D1/H4/H1 -- sin timeframe, las 3
+    // temporalidades quedan implicitas (asi lo describe el curso).
+    LOOKBACK_VELAS_RANGE_CONFLUENCE_D1_H4_H1("parameter.rangeConfluenceD1H4H1.lookbackVelas"),
+    CONFIRMACION_VELAS_RANGE_CONFLUENCE_D1_H4_H1("parameter.rangeConfluenceD1H4H1.confirmacionVelas"),
+    PROPORCION_PROXIMIDAD_RANGE_CONFLUENCE_D1_H4_H1("parameter.rangeConfluenceD1H4H1.proporcionProximidad"),
+    DIRECCION_RANGE_CONFLUENCE_D1_H4_H1("parameter.rangeConfluenceD1H4H1.direccion"),
+
     // Parámetros de Características Fundamentales
     ESTADO_NOTICIA("parameter.noticias.estadoNoticia");
 

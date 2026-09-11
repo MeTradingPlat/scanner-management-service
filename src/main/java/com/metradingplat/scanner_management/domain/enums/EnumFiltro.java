@@ -57,6 +57,7 @@ public enum EnumFiltro {
     ACCELERATION_DECELERATION("filter.accelerationDeceleration.name", "filter.accelerationDeceleration.description"),
     CONFIRMATION_CANDLE("filter.confirmationCandle.name", "filter.confirmationCandle.description"),
     RANGE_EXTREME_PROXIMITY("filter.rangeExtremeProximity.name", "filter.rangeExtremeProximity.description"),
+    RANGE_CONFLUENCE_D1_H4_H1("filter.rangeConfluenceD1H4H1.name", "filter.rangeConfluenceD1H4H1.description"),
 
     // Categoría: Características Fundamentales
     FLOAT("filter.float.name", "filter.float.description"),
