@@ -56,6 +56,7 @@ public enum EnumFiltro {
     LIQUIDITY_GRAB_CANDLE("filter.liquidityGrabCandle.name", "filter.liquidityGrabCandle.description"),
     ACCELERATION_DECELERATION("filter.accelerationDeceleration.name", "filter.accelerationDeceleration.description"),
     CONFIRMATION_CANDLE("filter.confirmationCandle.name", "filter.confirmationCandle.description"),
+    RANGE_EXTREME_PROXIMITY("filter.rangeExtremeProximity.name", "filter.rangeExtremeProximity.description"),
 
     // Categoría: Características Fundamentales
     FLOAT("filter.float.name", "filter.float.description"),

@@ -95,6 +95,12 @@ public enum EnumParametro {
     PROPORCION_CUERPO_MINIMA_CONFIRMATION_CANDLE("parameter.confirmationCandle.proporcionCuerpoMinima"),
     DIRECCION_CONFIRMATION_CANDLE("parameter.confirmationCandle.direccion"),
 
+    // Parámetros de Proximidad a Extremo de Rango
+    TIMEFRAME_RANGE_EXTREME_PROXIMITY("parameter.rangeExtremeProximity.timeframe"),
+    LOOKBACK_VELAS_RANGE_EXTREME_PROXIMITY("parameter.rangeExtremeProximity.lookbackVelas"),
+    PROPORCION_PROXIMIDAD_RANGE_EXTREME_PROXIMITY("parameter.rangeExtremeProximity.proporcionProximidad"),
+    DIRECCION_RANGE_EXTREME_PROXIMITY("parameter.rangeExtremeProximity.direccion"),
+
     // Parámetros de Características Fundamentales
     ESTADO_NOTICIA("parameter.noticias.estadoNoticia");
 
