@@ -22,4 +22,5 @@ public class FiltroDtoRespuesta {
     private EnumTipoFiltro enumTipoFiltro;
     private String etiquetaTipoFiltro;
     private boolean revisionTiempoReal;
+    private Integer grupoAlternativo;
 }

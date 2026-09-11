@@ -84,6 +84,7 @@ public class GestionarFiltroCUAdapter implements GestionarFiltroCUIntPort {
             Filtro filtroReconstruido = objGestorFactoryFiltro.crearFiltroConValoresSeleccionados(
                     filtro.getEnumFiltro(), valoresSeleccionados);
             filtroReconstruido.setRevisionTiempoReal(filtro.isRevisionTiempoReal());
+            filtroReconstruido.setGrupoAlternativo(filtro.getGrupoAlternativo());
             filtrosARetornar.add(filtroReconstruido);
         }
 
@@ -116,6 +117,7 @@ public class GestionarFiltroCUAdapter implements GestionarFiltroCUIntPort {
             Filtro filtroCreado = objGestorFactoryFiltro.crearFiltroConValoresSeleccionados(
                     filtro.getEnumFiltro(), valoresSeleccionados);
             filtroCreado.setRevisionTiempoReal(filtro.isRevisionTiempoReal());
+            filtroCreado.setGrupoAlternativo(filtro.getGrupoAlternativo());
             filtrosCreados.add(filtroCreado);
         }
 

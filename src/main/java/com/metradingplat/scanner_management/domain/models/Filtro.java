@@ -25,6 +25,12 @@ public class Filtro {
     // normal (~60s). Ver realtime_candle_client.py.
     private boolean revisionTiempoReal;
 
+    // null = filtro requerido (AND estricto, comportamiento de siempre). Dos
+    // o mas filtros con el MISMO valor no nulo forman un grupo alternativo
+    // dentro de su grupo de temporalidad: basta con que UNO de ellos pase
+    // (ver SymbolPipeline._todos_los_requeridos_pasan en signal-processing-service).
+    private Integer grupoAlternativo;
+
     public EnumTipoFiltro getEnumTipoFiltro() {
         EnumCategoriaFiltro categoria = this.objCategoria != null ? this.objCategoria.getEnumCategoriaFiltro() : null;
         return ClasificadorTipoFiltro.clasificar(this.enumFiltro, categoria);

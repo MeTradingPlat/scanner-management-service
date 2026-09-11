@@ -51,6 +51,12 @@ public class FiltroEntity {
     @Column(name = "revision_tiempo_real", nullable = false, columnDefinition = "boolean default false")
     private boolean revisionTiempoReal;
 
+    // Ver Filtro.grupoAlternativo (dominio). Nullable sin columnDefinition
+    // -- a diferencia de revisionTiempoReal, null es un estado valido
+    // esperado (filtro requerido), no hace falta backfillear filas viejas.
+    @Column(name = "grupo_alternativo")
+    private Integer grupoAlternativo;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "objFiltro", cascade = { CascadeType.PERSIST, CascadeType.REMOVE,
             CascadeType.MERGE })
     private List<ParametroEntity> parametros = new ArrayList<>();

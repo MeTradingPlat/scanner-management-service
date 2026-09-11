@@ -23,4 +23,6 @@ public class FiltroDtoPeticion {
     private List<ParametroDTOPeticion> parametros;
 
     private boolean revisionTiempoReal;
+
+    private Integer grupoAlternativo;
 }
