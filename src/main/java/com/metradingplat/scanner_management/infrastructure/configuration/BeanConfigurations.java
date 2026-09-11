@@ -55,9 +55,12 @@ public class BeanConfigurations {
             GestionarFiltroGatewayIntPort objGestionarFiltroGatewayIntPort,
             GestionarEscanerGatewayIntPort objGestionarEscanerGatewayIntPort,
             GestorEstrategiaFiltroIntPort objGestorFactoryFiltro,
-            FormateadorResultadosIntPort objFormateadorResultadosIntPort) {
+            FormateadorResultadosIntPort objFormateadorResultadosIntPort,
+            GestionarEstadoEscanerGatewayIntPort objGestionarEstadoEscanerGatewayIntPort,
+            GestionarEstadoEscanerCUIntPort objGestionarEstadoEscanerCUIntPort) {
         return new GestionarFiltroCUAdapter(objGestionarFiltroGatewayIntPort, objGestionarEscanerGatewayIntPort,
-                objGestorFactoryFiltro, objFormateadorResultadosIntPort);
+                objGestorFactoryFiltro, objFormateadorResultadosIntPort, objGestionarEstadoEscanerGatewayIntPort,
+                objGestionarEstadoEscanerCUIntPort);
     }
 
     @Bean
