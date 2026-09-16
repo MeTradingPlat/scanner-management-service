@@ -21,6 +21,5 @@ public class FiltroDtoRespuesta {
     private List<ParametroDTORespuesta> parametros;
     private EnumTipoFiltro enumTipoFiltro;
     private String etiquetaTipoFiltro;
-    private boolean revisionTiempoReal;
     private Integer grupoAlternativo;
 }

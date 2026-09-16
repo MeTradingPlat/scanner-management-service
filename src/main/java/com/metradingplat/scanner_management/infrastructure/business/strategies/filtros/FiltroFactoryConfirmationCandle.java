@@ -93,8 +93,8 @@ public class FiltroFactoryConfirmationCandle implements IFiltroFactory {
                                 .collect(Collectors.toList());
         }
 
-        // Pensado para el ultimo tramo del embudo (M1/M3) -- ver
-        // signal-processing-service Fase 3 (revisionTiempoReal).
+        // Pensado para el ultimo tramo del embudo (M1/M3) -- confirmacion de
+        // vela de poder, un patron de corto plazo por naturaleza.
         private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
                 EnumTimeframe._1M, EnumTimeframe._3M, EnumTimeframe._5M);
 

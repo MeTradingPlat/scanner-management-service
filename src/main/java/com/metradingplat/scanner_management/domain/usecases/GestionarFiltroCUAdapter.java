@@ -79,11 +79,10 @@ public class GestionarFiltroCUAdapter implements GestionarFiltroCUIntPort {
 
             // crearFiltroConValoresSeleccionados reconstruye el Filtro desde
             // la fabrica (enumFiltro + parametros) -- no conoce
-            // revisionTiempoReal, que solo vive en la entidad guardada, asi
+            // grupoAlternativo, que solo vive en la entidad guardada, asi
             // que hay que copiarlo aparte o se pierde en cada lectura.
             Filtro filtroReconstruido = objGestorFactoryFiltro.crearFiltroConValoresSeleccionados(
                     filtro.getEnumFiltro(), valoresSeleccionados);
-            filtroReconstruido.setRevisionTiempoReal(filtro.isRevisionTiempoReal());
             filtroReconstruido.setGrupoAlternativo(filtro.getGrupoAlternativo());
             filtrosARetornar.add(filtroReconstruido);
         }
@@ -112,11 +111,10 @@ public class GestionarFiltroCUAdapter implements GestionarFiltroCUIntPort {
             }
 
             // Mismo caso que obtenerFiltros: la fabrica no conoce
-            // revisionTiempoReal (viene del request, no de los parametros),
+            // grupoAlternativo (viene del request, no de los parametros),
             // asi que se pierde si no se copia desde el filtro original.
             Filtro filtroCreado = objGestorFactoryFiltro.crearFiltroConValoresSeleccionados(
                     filtro.getEnumFiltro(), valoresSeleccionados);
-            filtroCreado.setRevisionTiempoReal(filtro.isRevisionTiempoReal());
             filtroCreado.setGrupoAlternativo(filtro.getGrupoAlternativo());
             filtrosCreados.add(filtroCreado);
         }

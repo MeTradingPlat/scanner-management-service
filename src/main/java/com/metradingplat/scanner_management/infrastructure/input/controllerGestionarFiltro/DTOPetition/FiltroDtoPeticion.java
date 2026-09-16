@@ -22,7 +22,5 @@ public class FiltroDtoPeticion {
     @Valid
     private List<ParametroDTOPeticion> parametros;
 
-    private boolean revisionTiempoReal;
-
     private Integer grupoAlternativo;
 }

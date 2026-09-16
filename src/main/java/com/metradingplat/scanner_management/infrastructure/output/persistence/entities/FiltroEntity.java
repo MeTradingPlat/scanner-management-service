@@ -45,15 +45,9 @@ public class FiltroEntity {
     @JoinColumn(name = "idscaner", nullable = false)
     private EscanerEntity objEscaner;
 
-    // Ver Filtro.revisionTiempoReal (dominio). columnDefinition con DEFAULT
-    // explicito por la misma razon que permitir_multiples_senales en
-    // EscanerEntity: ddl-auto=update sin Flyway/Liquibase.
-    @Column(name = "revision_tiempo_real", nullable = false, columnDefinition = "boolean default false")
-    private boolean revisionTiempoReal;
-
     // Ver Filtro.grupoAlternativo (dominio). Nullable sin columnDefinition
-    // -- a diferencia de revisionTiempoReal, null es un estado valido
-    // esperado (filtro requerido), no hace falta backfillear filas viejas.
+    // -- null es un estado valido esperado (filtro requerido), no hace
+    // falta backfillear filas viejas.
     @Column(name = "grupo_alternativo")
     private Integer grupoAlternativo;
 
