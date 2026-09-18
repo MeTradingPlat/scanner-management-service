@@ -3,20 +3,13 @@ spring:
     url: jdbc:postgresql://localhost:5432/bd_scanners
     username: postgres
     password: root
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: scanner-management-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-
 service:
   signal-processing:
     url: http://localhost:8000
+  log-service:
+    ws-url: ws://localhost:8084/ws/internal/logs
+  notification-service:
+    ws-url: ws://localhost:8085/ws/internal/notificaciones/estado-escaner
 
 eureka:
   client:
