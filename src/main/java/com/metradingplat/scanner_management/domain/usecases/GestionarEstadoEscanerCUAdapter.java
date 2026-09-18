@@ -81,7 +81,18 @@ public class GestionarEstadoEscanerCUAdapter implements GestionarEstadoEscanerCU
     public EstadoEscaner archivarEscaner(Long id) {
         log.info("[USE-CASE] archivarEscaner - id={}", id);
         Escaner escaner = validarEscanerExistente(id);
-        String estadoAnterior = escaner.getObjEstado().getEnumEstadoEscaner().name();
+        EnumEstadoEscaner estadoAnteriorEnum = escaner.getObjEstado().getEnumEstadoEscaner();
+        String estadoAnterior = estadoAnteriorEnum.name();
+        // La maquina de estados permite archivar directo desde INICIADO (sin
+        // pasar por DETENIDO) -- sin este aviso, el proceso real del escaner
+        // en signal-processing-service seguia corriendo de fondo, huerfano,
+        // aunque la BD ya lo marcara ARCHIVADO. Mismo aviso que hace
+        // detenerEscaner, solo que condicional (no tiene sentido avisar un
+        // "detenido" a signal-processing-service si ya estaba DETENIDO).
+        if (estadoAnteriorEnum == EnumEstadoEscaner.INICIADO) {
+            log.info("[USE-CASE] archivarEscaner - estaba INICIADO, notificando parada a signal-processing, id={}", id);
+            this.objFuenteMensajesSignalProcessing.notificarEscanerDetenido(id);
+        }
         EstadoEscaner estado = cambiarEstado(escaner, EnumEstadoEscaner.ARCHIVADO);
         // listarEscaneres() excluye los archivados (ver
         // GestionarEscanerCUAdapter.listarEscaneres) -- sin notificar, un
