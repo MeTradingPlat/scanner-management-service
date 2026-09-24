@@ -111,7 +111,7 @@ public class FiltroFactoryConsecutiveCandles implements IFiltroFactory {
                                 valorUsuario != null ? valorUsuario.getValor1() : 1F,
                                 valorUsuario != null ? valorUsuario.getValor2() : 1F);
                 valor.setValoresPermitidos(CondicionalOpciones.alcistaBajistaNinguna());
-                return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
+                return new Parametro(EnumParametro.CONDICION, "parameter.consecutiveCandles.condicion", valor, opciones);
         }
 
         private Parametro crearParametroNumeroVelasConsecutivas(ValorInteger valorUsuario) {
