@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -138,10 +139,22 @@ public class FuenteMensajesImplAdapter implements FuenteMensajesIntPort {
     public ParametroDTORespuesta internacionalizarParametro(ParametroDTORespuesta objeto) {
         if (objeto == null || objeto.getEnumParametro() == null)
             return objeto;
-        objeto.setEtiqueta(this.obtenerMensaje(objeto.getEnumParametro().getEtiqueta(), this.getLocale()));
+        objeto.setEtiqueta(this.etiquetaDeParametro(objeto));
         objeto.setObjValorSeleccionado(this.internacionalizarValor(objeto.getObjValorSeleccionado()));
         objeto.setOpciones(this.internacionalizarValores(objeto.getOpciones()));
         return objeto;
+    }
+
+    private String etiquetaDeParametro(ParametroDTORespuesta objeto) {
+        String propia = objeto.getEtiqueta();
+        if (propia != null && !propia.isBlank() && !propia.equals(objeto.getEnumParametro().getEtiqueta())) {
+            try {
+                return this.obtenerMensaje(propia, this.getLocale());
+            } catch (NoSuchMessageException e) {
+                // la etiqueta propia no es una llave de mensajes: se usa la generica del enum
+            }
+        }
+        return this.obtenerMensaje(objeto.getEnumParametro().getEtiqueta(), this.getLocale());
     }
 
     @Override
