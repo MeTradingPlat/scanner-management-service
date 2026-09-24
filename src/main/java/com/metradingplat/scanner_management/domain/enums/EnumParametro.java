@@ -66,6 +66,7 @@ public enum EnumParametro {
     NUMERO_VELAS_NEW_CANDLE("parameter.newCandleHighLow.numeroVelas"),
     TIMEFRAME_NEW_CANDLE("parameter.newCandleHighLow.timeframe"),
     PUNTO_REFERENCIA_PULLBACK("parameter.percentagePullbackHighsLows.puntoReferenciaPullback"),
+    NUMERO_VELAS_PULLBACK("parameter.percentagePullbackHighsLows.numeroVelas"),
     PORCENTAJE_RETROCESO_PULLBACK("parameter.percentagePullbackHighsLows.porcentajeRetroceso"),
     OPCION_EXTREMO_BREAK_OVER("parameter.breakOverRecentHighsLows.opcionExtremo"),
     NUMERO_VELAS_BREAK_OVER("parameter.breakOverRecentHighsLows.numeroVelas"),

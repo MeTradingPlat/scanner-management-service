@@ -12,6 +12,7 @@ import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
+import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -77,6 +78,8 @@ public class FiltroFactoryPercentagePullbackHighsLows implements IFiltroFactory 
                                                 (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
                 parametros.add(this.crearParametroPuntoReferencia(
                                 (ValorString) valoresSeleccionados.get(EnumParametro.PUNTO_REFERENCIA_PULLBACK)));
+                parametros.add(this.crearParametroNumeroVelas(
+                                (ValorInteger) valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_PULLBACK)));
 
                 filtro.setParametros(parametros);
                 return filtro;
@@ -122,6 +125,17 @@ public class FiltroFactoryPercentagePullbackHighsLows implements IFiltroFactory 
                                 EnumParametro.PUNTO_REFERENCIA_PULLBACK.getEtiqueta(), valor, opciones);
         }
 
+        private Parametro crearParametroNumeroVelas(ValorInteger valorUsuario) {
+                EnumTipoValor enumTipoValor = EnumTipoValor.INTEGER;
+                List<Valor> opciones = this.obtenerOpciones(new IEnumValores[0]);
+                ValorInteger valor = new ValorInteger(
+                                "etiqueta.vacia",
+                                enumTipoValor,
+                                valorUsuario != null ? valorUsuario.getValor() : 5);
+                return new Parametro(EnumParametro.NUMERO_VELAS_PULLBACK,
+                                EnumParametro.NUMERO_VELAS_PULLBACK.getEtiqueta(), valor, opciones);
+        }
+
         @Override
         public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
                 List<ResultadoValidacion> errores = new ArrayList<>();
@@ -134,6 +148,10 @@ public class FiltroFactoryPercentagePullbackHighsLows implements IFiltroFactory 
                 this.objValidador.validarString(this.enumFiltro, EnumParametro.PUNTO_REFERENCIA_PULLBACK,
                                 valoresSeleccionados.get(EnumParametro.PUNTO_REFERENCIA_PULLBACK),
                                 EnumPuntoReferenciaPullback.class)
+                                .ifPresent(errores::add);
+
+                this.objValidador.validarInteger(this.enumFiltro, EnumParametro.NUMERO_VELAS_PULLBACK,
+                                valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_PULLBACK), 2, 100)
                                 .ifPresent(errores::add);
 
                 return errores;
