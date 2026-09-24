@@ -13,6 +13,7 @@ import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
+import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -78,6 +79,8 @@ public class FiltroFactoryNewCandleHighLow implements IFiltroFactory {
                 parametros.add(this
                                 .crearParametroTimeframe((ValorString) valoresSeleccionados
                                                 .get(EnumParametro.TIMEFRAME_NEW_CANDLE)));
+                parametros.add(this.crearParametroNumeroVelas(
+                                (ValorInteger) valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_NEW_CANDLE)));
                 // Sin esto el filtro pasaba incondicionalmente con cualquier
                 // simbolo con >= 2 velas, sin importar si de verdad hizo un
                 // nuevo maximo/minimo (compute_value ya devuelve 0.0/1.0).
@@ -105,6 +108,17 @@ public class FiltroFactoryNewCandleHighLow implements IFiltroFactory {
                                 enumValor.name());
                 return new Parametro(EnumParametro.OPCION_EXTREMO_NEW_CANDLE,
                                 EnumParametro.OPCION_EXTREMO_NEW_CANDLE.getEtiqueta(), valor, opciones);
+        }
+
+        private Parametro crearParametroNumeroVelas(ValorInteger valorUsuario) {
+                EnumTipoValor enumTipoValor = EnumTipoValor.INTEGER;
+                List<Valor> opciones = this.obtenerOpciones(new IEnumValores[0]);
+                ValorInteger valor = new ValorInteger(
+                                "etiqueta.vacia",
+                                enumTipoValor,
+                                valorUsuario != null ? valorUsuario.getValor() : 20);
+                return new Parametro(EnumParametro.NUMERO_VELAS_NEW_CANDLE,
+                                EnumParametro.NUMERO_VELAS_NEW_CANDLE.getEtiqueta(), valor, opciones);
         }
 
         private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
@@ -157,6 +171,10 @@ public class FiltroFactoryNewCandleHighLow implements IFiltroFactory {
                 this.objValidador.validarString(this.enumFiltro, EnumParametro.OPCION_EXTREMO_NEW_CANDLE,
                                 valoresSeleccionados.get(EnumParametro.OPCION_EXTREMO_NEW_CANDLE),
                                 EnumOpcionExtremo.class)
+                                .ifPresent(errores::add);
+
+                this.objValidador.validarInteger(this.enumFiltro, EnumParametro.NUMERO_VELAS_NEW_CANDLE,
+                                valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_NEW_CANDLE), 2, 100)
                                 .ifPresent(errores::add);
 
                 this.objValidador.validarStringConOpciones(this.enumFiltro, EnumParametro.TIMEFRAME_NEW_CANDLE,

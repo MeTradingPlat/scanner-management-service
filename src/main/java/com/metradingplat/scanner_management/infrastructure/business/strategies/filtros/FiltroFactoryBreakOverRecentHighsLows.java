@@ -13,6 +13,7 @@ import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
+import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -78,6 +79,8 @@ public class FiltroFactoryBreakOverRecentHighsLows implements IFiltroFactory {
                 parametros.add(this
                                 .crearParametroTimeframe((ValorString) valoresSeleccionados
                                                 .get(EnumParametro.TIMEFRAME_BREAK_OVER)));
+                parametros.add(this.crearParametroNumeroVelas(
+                                (ValorInteger) valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_BREAK_OVER)));
                 // Sin esto el filtro pasaba incondicionalmente con cualquier
                 // simbolo con >= 2 velas, sin importar si de verdad rompio el
                 // rango reciente (compute_value ya devuelve 0.0/1.0).
@@ -105,6 +108,17 @@ public class FiltroFactoryBreakOverRecentHighsLows implements IFiltroFactory {
                                 enumValor.name());
                 return new Parametro(EnumParametro.OPCION_EXTREMO_BREAK_OVER,
                                 EnumParametro.OPCION_EXTREMO_BREAK_OVER.getEtiqueta(), valor, opciones);
+        }
+
+        private Parametro crearParametroNumeroVelas(ValorInteger valorUsuario) {
+                EnumTipoValor enumTipoValor = EnumTipoValor.INTEGER;
+                List<Valor> opciones = this.obtenerOpciones(new IEnumValores[0]);
+                ValorInteger valor = new ValorInteger(
+                                "etiqueta.vacia",
+                                enumTipoValor,
+                                valorUsuario != null ? valorUsuario.getValor() : 20);
+                return new Parametro(EnumParametro.NUMERO_VELAS_BREAK_OVER,
+                                EnumParametro.NUMERO_VELAS_BREAK_OVER.getEtiqueta(), valor, opciones);
         }
 
         private static final List<EnumTimeframe> TIMEFRAMES_SOPORTADOS = Arrays.asList(
@@ -157,6 +171,10 @@ public class FiltroFactoryBreakOverRecentHighsLows implements IFiltroFactory {
                 this.objValidador.validarString(this.enumFiltro, EnumParametro.OPCION_EXTREMO_BREAK_OVER,
                                 valoresSeleccionados.get(EnumParametro.OPCION_EXTREMO_BREAK_OVER),
                                 EnumOpcionExtremo.class)
+                                .ifPresent(errores::add);
+
+                this.objValidador.validarInteger(this.enumFiltro, EnumParametro.NUMERO_VELAS_BREAK_OVER,
+                                valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_BREAK_OVER), 2, 100)
                                 .ifPresent(errores::add);
 
                 this.objValidador.validarStringConOpciones(this.enumFiltro, EnumParametro.TIMEFRAME_BREAK_OVER,
