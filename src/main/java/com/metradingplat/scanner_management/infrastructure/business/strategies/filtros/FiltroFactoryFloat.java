@@ -88,21 +88,14 @@ public class FiltroFactoryFloat implements IFiltroFactory {
         EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
         List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
         EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
-                : EnumCondicional.MAYOR_QUE;
+                : EnumCondicional.ENTRE; // antes MAYOR_QUE dejaba valor2 (el techo real) inactivo
         ValorCondicional valor = new ValorCondicional(
                 enumCondicional.getEtiqueta(),
                 enumTipoValor,
                 enumCondicional,
-                valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : false, // isInteger
-                                                                                                                   // =
-                                                                                                                   // true
-                                                                                                                   // (número
-                                                                                                                   // de
-                                                                                                                   // acciones
-                                                                                                                   // en
-                                                                                                                   // flotación)
-                valorUsuario != null ? valorUsuario.getValor1() : 1_000,
-                valorUsuario != null ? valorUsuario.getValor2() : 50_000_000);
+                valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : true, // numero de acciones en flotacion
+                valorUsuario != null ? valorUsuario.getValor1() : 0,
+                valorUsuario != null ? valorUsuario.getValor2() : 20_000_000);
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }
 

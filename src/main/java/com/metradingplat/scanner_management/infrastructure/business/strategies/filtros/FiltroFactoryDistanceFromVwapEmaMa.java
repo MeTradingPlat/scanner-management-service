@@ -74,19 +74,24 @@ public class FiltroFactoryDistanceFromVwapEmaMa implements IFiltroFactory {
         public Filtro obtenerFiltro(Map<EnumParametro, Valor> valoresSeleccionados) {
                 Filtro filtro = this.obtenerInformacionFiltro();
 
+                Valor lineaSeleccionada = valoresSeleccionados
+                                .get(EnumParametro.LINEA_REFERENCIA_DISTANCE_FROM_VWAP_EMA_MA);
+                EnumLineaReferencia linea = lineaSeleccionada instanceof ValorString
+                                ? EnumLineaReferencia.valueOf(((ValorString) lineaSeleccionada).getValor())
+                                : EnumLineaReferencia.VWAP;
+
                 List<Parametro> parametros = new ArrayList<>();
                 parametros.add(
                                 this.crearParametroCondicion(
                                                 (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
-                parametros.add(this.crearParametroLineaReferencia(
-                                (ValorString) valoresSeleccionados
-                                                .get(EnumParametro.LINEA_REFERENCIA_DISTANCE_FROM_VWAP_EMA_MA)));
+                parametros.add(this.crearParametroLineaReferencia((ValorString) lineaSeleccionada));
                 parametros.add(this.crearParametroModoDistancia(
                                 (ValorString) valoresSeleccionados
                                                 .get(EnumParametro.MODO_DISTANCIA_DISTANCE_FROM_VWAP_EMA_MA)));
                 parametros.add(this.crearParametroPeriodoLinea(
                                 (ValorInteger) valoresSeleccionados
-                                                .get(EnumParametro.PERIODO_LINEA_DISTANCE_FROM_VWAP_EMA_MA)));
+                                                .get(EnumParametro.PERIODO_LINEA_DISTANCE_FROM_VWAP_EMA_MA),
+                                linea));
 
                 filtro.setParametros(parametros);
                 return filtro;
@@ -144,13 +149,17 @@ public class FiltroFactoryDistanceFromVwapEmaMa implements IFiltroFactory {
                                 EnumParametro.MODO_DISTANCIA_DISTANCE_FROM_VWAP_EMA_MA.getEtiqueta(), valor, opciones);
         }
 
-        private Parametro crearParametroPeriodoLinea(ValorInteger valorUsuario) {
+        private Parametro crearParametroPeriodoLinea(ValorInteger valorUsuario, EnumLineaReferencia linea) {
                 EnumTipoValor enumTipoValor = EnumTipoValor.INTEGER;
                 List<Valor> opciones = this.obtenerOpciones(new IEnumValores[0]);
+                // Default condicionado a la linea elegida -- EMA9/SMA20 son los
+                // estandares reales de day trading, un unico valor fijo no sirve
+                // para las dos (antes quedaba en 2, ruido puro en cualquier caso).
+                int defaultPeriodo = linea == EnumLineaReferencia.EMA ? 9 : 20;
                 ValorInteger valor = new ValorInteger(
                                 "etiqueta.vacia",
                                 enumTipoValor,
-                                valorUsuario != null ? valorUsuario.getValor() : 2);
+                                valorUsuario != null ? valorUsuario.getValor() : defaultPeriodo);
                 return new Parametro(EnumParametro.PERIODO_LINEA_DISTANCE_FROM_VWAP_EMA_MA,
                                 EnumParametro.PERIODO_LINEA_DISTANCE_FROM_VWAP_EMA_MA.getEtiqueta(), valor, opciones);
         }

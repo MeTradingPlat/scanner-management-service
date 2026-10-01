@@ -129,7 +129,7 @@ public class FiltroFactoryATR implements IFiltroFactory {
                 List<Valor> opciones = this.obtenerOpciones(EnumModoPromedioMovil.values());
                 EnumModoPromedioMovil enumValor = valorUsuario != null
                                 ? EnumModoPromedioMovil.valueOf(valorUsuario.getValor())
-                                : EnumModoPromedioMovil.EMA;
+                                : EnumModoPromedioMovil.RMA; // Wilder's smoothing, el estandar real de ATR
                 ValorString valor = new ValorString(
                                 enumValor.getEtiqueta(),
                                 enumTipoValor,

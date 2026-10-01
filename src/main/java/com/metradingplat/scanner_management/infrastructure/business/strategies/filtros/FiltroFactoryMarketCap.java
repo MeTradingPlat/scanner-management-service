@@ -88,13 +88,13 @@ public class FiltroFactoryMarketCap implements IFiltroFactory {
         EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
         List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
         EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
-                : EnumCondicional.MAYOR_QUE;
+                : EnumCondicional.ENTRE; // antes MAYOR_QUE dejaba valor1 (el piso real) inactivo
         ValorCondicional valor = new ValorCondicional(
                 enumCondicional.getEtiqueta(),
                 enumTipoValor,
                 enumCondicional,
                 valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : false,
-                valorUsuario != null ? valorUsuario.getValor1() : 1_000_000.0F,
+                valorUsuario != null ? valorUsuario.getValor1() : 50_000_000.0F,
                 valorUsuario != null ? valorUsuario.getValor2() : 2000_000_000.0F);
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }

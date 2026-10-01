@@ -104,12 +104,7 @@ public class FiltroFactoryVolume implements IFiltroFactory {
                                 enumCondicional,
                                 valorUsuario != null && valorUsuario.getIsInteger() != null
                                                 ? valorUsuario.getIsInteger()
-                                                : false, // isInteger
-                                                         // =
-                                                         // true
-                                                         // (volumen
-                                                         // de
-                                                         // acciones)
+                                                : true, // volumen de acciones
                                 valorUsuario != null ? valorUsuario.getValor1() : 100_000,
                                 valorUsuario != null ? valorUsuario.getValor2() : 5_000_000);
                 return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);

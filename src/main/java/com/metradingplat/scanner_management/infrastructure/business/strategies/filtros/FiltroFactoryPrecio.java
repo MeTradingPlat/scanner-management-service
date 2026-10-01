@@ -94,7 +94,7 @@ public class FiltroFactoryPrecio implements IFiltroFactory {
                 enumTipoValor,
                 enumCondicional,
                 valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : false,
-                valorUsuario != null ? valorUsuario.getValor1() : 0.0002F,
+                valorUsuario != null ? valorUsuario.getValor1() : 1.0F,
                 valorUsuario != null ? valorUsuario.getValor2() : 10.0F);
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }

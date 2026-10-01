@@ -94,7 +94,7 @@ public class FiltroFactoryShortInterest implements IFiltroFactory {
                 enumTipoValor,
                 enumCondicional,
                 valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : false,
-                valorUsuario != null ? valorUsuario.getValor1() : 5.0F,
+                valorUsuario != null ? valorUsuario.getValor1() : 10.0F, // candidato real a short-squeeze
                 valorUsuario != null ? valorUsuario.getValor2() : 50.0F);
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }

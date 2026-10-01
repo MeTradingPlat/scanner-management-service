@@ -157,7 +157,7 @@ public class FiltroFactoryCrossingAboveBelow implements IFiltroFactory {
         ValorInteger valor = new ValorInteger(
                 "etiqueta.vacia",
                 enumTipoValor,
-                valorUsuario != null ? valorUsuario.getValor() : 2);
+                valorUsuario != null ? valorUsuario.getValor() : 9); // EMA9, estandar real de day trading
         return new Parametro(
                 EnumParametro.PERIODO_EMA_CROSSING_ABOVE_BELOW,
                 EnumParametro.PERIODO_EMA_CROSSING_ABOVE_BELOW.getEtiqueta(),

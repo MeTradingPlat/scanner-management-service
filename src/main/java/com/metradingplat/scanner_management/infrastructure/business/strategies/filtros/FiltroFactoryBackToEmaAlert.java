@@ -101,7 +101,7 @@ public class FiltroFactoryBackToEmaAlert implements IFiltroFactory {
         ValorInteger valor = new ValorInteger(
                 "etiqueta.vacia",
                 enumTipoValor,
-                valorUsuario != null ? valorUsuario.getValor() : 14);
+                valorUsuario != null ? valorUsuario.getValor() : 9); // EMA9, estandar real de day trading
         return new Parametro(EnumParametro.PERIODO_EMA_BACK_TO_EMA, EnumParametro.PERIODO_EMA_BACK_TO_EMA.getEtiqueta(),
                 valor, opciones);
     }

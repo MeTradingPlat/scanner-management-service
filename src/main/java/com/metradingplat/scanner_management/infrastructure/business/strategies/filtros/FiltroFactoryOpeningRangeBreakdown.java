@@ -111,7 +111,7 @@ public class FiltroFactoryOpeningRangeBreakdown implements IFiltroFactory {
                 .map(e -> new ValorString(e.getEtiqueta(), enumTipoValor, e.getName()))
                 .collect(Collectors.toList());
         EnumTimeframe enumValor = valorUsuario != null ? EnumTimeframe.valueOf(valorUsuario.getValor())
-                : EnumTimeframe._5M;
+                : EnumTimeframe._15M; // reduce fakeouts vs 5M
         ValorString valor = new ValorString(
                 enumValor.getEtiqueta(),
                 enumTipoValor,

@@ -105,8 +105,8 @@ public class FiltroFactoryRSI implements IFiltroFactory {
                                 valorUsuario != null && valorUsuario.getIsInteger() != null
                                                 ? valorUsuario.getIsInteger()
                                                 : false,
-                                valorUsuario != null ? valorUsuario.getValor1() : 14.0F,
-                                valorUsuario != null ? valorUsuario.getValor2() : 21.0F);
+                                valorUsuario != null ? valorUsuario.getValor1() : 70.0F, // sobrecompra (Wilder)
+                                valorUsuario != null ? valorUsuario.getValor2() : 30.0F); // sobreventa (Wilder)
                 return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
         }
 

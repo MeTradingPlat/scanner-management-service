@@ -88,19 +88,14 @@ public class FiltroFactoryDaysUntilEarnings implements IFiltroFactory {
         EnumTipoValor enumTipoValor = EnumTipoValor.CONDICIONAL;
         List<Valor> opciones = this.obtenerOpciones(EnumCondicional.values());
         EnumCondicional enumCondicional = valorUsuario != null ? valorUsuario.getEnumCondicional()
-                : EnumCondicional.MAYOR_QUE;
+                : EnumCondicional.ENTRE; // antes MAYOR_QUE 0 era cierto 364 dias al año, no aislaba la ventana
         ValorCondicional valor = new ValorCondicional(
                 enumCondicional.getEtiqueta(),
                 enumTipoValor,
                 enumCondicional,
-                valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : false, // isInteger
-                                                                                                                   // =
-                                                                                                                   // true
-                                                                                                                   // (días
-                                                                                                                   // hasta
-                                                                                                                   // earnings)
+                valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : true, // dias hasta earnings
                 valorUsuario != null ? valorUsuario.getValor1() : 0,
-                valorUsuario != null ? valorUsuario.getValor2() : 30);
+                valorUsuario != null ? valorUsuario.getValor2() : 14);
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }
 

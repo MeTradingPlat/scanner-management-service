@@ -119,7 +119,7 @@ public class FiltroFactoryThroughEmaVwapAlert implements IFiltroFactory {
                 ValorInteger valor = new ValorInteger(
                                 "etiqueta.vacia",
                                 enumTipoValor,
-                                valorUsuario != null ? valorUsuario.getValor() : 2);
+                                valorUsuario != null ? valorUsuario.getValor() : 9); // EMA9, estandar real de day trading
                 return new Parametro(EnumParametro.THROUGH_EMA_VWAP_PERIODO_EMA,
                                 EnumParametro.THROUGH_EMA_VWAP_PERIODO_EMA.getEtiqueta(), valor, opciones);
         }

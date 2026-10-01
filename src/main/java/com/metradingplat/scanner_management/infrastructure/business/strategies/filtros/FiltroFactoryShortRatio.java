@@ -94,7 +94,7 @@ public class FiltroFactoryShortRatio implements IFiltroFactory {
                 enumTipoValor,
                 enumCondicional,
                 valorUsuario != null && valorUsuario.getIsInteger() != null ? valorUsuario.getIsInteger() : false,
-                valorUsuario != null ? valorUsuario.getValor1() : 1.0F,
+                valorUsuario != null ? valorUsuario.getValor1() : 5.0F, // dias-para-cubrir elevado
                 valorUsuario != null ? valorUsuario.getValor2() : 15.0F);
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }

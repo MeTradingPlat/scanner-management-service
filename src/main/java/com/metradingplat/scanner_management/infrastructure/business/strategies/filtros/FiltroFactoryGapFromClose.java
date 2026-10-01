@@ -101,7 +101,7 @@ public class FiltroFactoryGapFromClose implements IFiltroFactory {
                                 valorUsuario != null && valorUsuario.getIsInteger() != null
                                                 ? valorUsuario.getIsInteger()
                                                 : false,
-                                valorUsuario != null ? valorUsuario.getValor1() : 0.10F,
+                                valorUsuario != null ? valorUsuario.getValor1() : 3.0F, // umbral real de "Gap and Go"
                                 valorUsuario != null ? valorUsuario.getValor2() : 10.0F);
                 return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
         }
