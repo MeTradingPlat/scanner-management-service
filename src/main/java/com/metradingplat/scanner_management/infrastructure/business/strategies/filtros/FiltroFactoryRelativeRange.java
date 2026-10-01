@@ -11,6 +11,7 @@ import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
+import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -73,6 +74,8 @@ public class FiltroFactoryRelativeRange implements IFiltroFactory {
         List<Parametro> parametros = new ArrayList<>();
         parametros.add(
                 this.crearParametroCondicion((ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
+        parametros.add(this.crearParametroPeriodoAtr(
+                (ValorInteger) valoresSeleccionados.get(EnumParametro.PERIODO_ATR_RELATIVE_RANGE)));
 
         filtro.setParametros(parametros);
         return filtro;
@@ -99,6 +102,17 @@ public class FiltroFactoryRelativeRange implements IFiltroFactory {
         return new Parametro(EnumParametro.CONDICION, EnumParametro.CONDICION.getEtiqueta(), valor, opciones);
     }
 
+    private Parametro crearParametroPeriodoAtr(ValorInteger valorUsuario) {
+        EnumTipoValor enumTipoValor = EnumTipoValor.INTEGER;
+        List<Valor> opciones = this.obtenerOpciones(new IEnumValores[0]);
+        ValorInteger valor = new ValorInteger(
+                "etiqueta.vacia",
+                enumTipoValor,
+                valorUsuario != null ? valorUsuario.getValor() : 14);
+        return new Parametro(EnumParametro.PERIODO_ATR_RELATIVE_RANGE,
+                EnumParametro.PERIODO_ATR_RELATIVE_RANGE.getEtiqueta(), valor, opciones);
+    }
+
     @Override
     public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
         List<ResultadoValidacion> errores = new ArrayList<>();
@@ -106,6 +120,11 @@ public class FiltroFactoryRelativeRange implements IFiltroFactory {
         this.objValidador
                 .validarCondicional(this.enumFiltro, EnumParametro.CONDICION,
                         valoresSeleccionados.get(EnumParametro.CONDICION), 10.0F, 500.0F)
+                .ifPresent(errores::add);
+
+        this.objValidador
+                .validarInteger(this.enumFiltro, EnumParametro.PERIODO_ATR_RELATIVE_RANGE,
+                        valoresSeleccionados.get(EnumParametro.PERIODO_ATR_RELATIVE_RANGE), 5, 100)
                 .ifPresent(errores::add);
 
         return errores;

@@ -12,6 +12,7 @@ import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
+import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -78,6 +79,8 @@ public class FiltroFactoryAverageVolume implements IFiltroFactory {
                                                 (ValorCondicional) valoresSeleccionados.get(EnumParametro.CONDICION)));
                 parametros.add(this.crearParametroTimeframe(
                                 (ValorString) valoresSeleccionados.get(EnumParametro.TIMEFRAME_AVERAGE_VOLUME)));
+                parametros.add(this.crearParametroNumeroVelas(
+                                (ValorInteger) valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_AVERAGE_VOLUME)));
 
                 filtro.setParametros(parametros);
                 return filtro;
@@ -125,6 +128,17 @@ public class FiltroFactoryAverageVolume implements IFiltroFactory {
                                 EnumParametro.TIMEFRAME_AVERAGE_VOLUME.getEtiqueta(), valor, opciones);
         }
 
+        private Parametro crearParametroNumeroVelas(ValorInteger valorUsuario) {
+                EnumTipoValor enumTipoValor = EnumTipoValor.INTEGER;
+                List<Valor> opciones = this.obtenerOpciones(new IEnumValores[0]);
+                ValorInteger valor = new ValorInteger(
+                                "etiqueta.vacia",
+                                enumTipoValor,
+                                valorUsuario != null ? valorUsuario.getValor() : 20);
+                return new Parametro(EnumParametro.NUMERO_VELAS_AVERAGE_VOLUME,
+                                EnumParametro.NUMERO_VELAS_AVERAGE_VOLUME.getEtiqueta(), valor, opciones);
+        }
+
         @Override
         public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
                 List<ResultadoValidacion> errores = new ArrayList<>();
@@ -137,6 +151,11 @@ public class FiltroFactoryAverageVolume implements IFiltroFactory {
 
                 this.objValidador.validarStringConOpciones(this.enumFiltro, EnumParametro.TIMEFRAME_AVERAGE_VOLUME,
                                 valoresSeleccionados.get(EnumParametro.TIMEFRAME_AVERAGE_VOLUME), TIMEFRAMES_SOPORTADOS)
+                                .ifPresent(errores::add);
+
+                this.objValidador
+                                .validarInteger(this.enumFiltro, EnumParametro.NUMERO_VELAS_AVERAGE_VOLUME,
+                                                valoresSeleccionados.get(EnumParametro.NUMERO_VELAS_AVERAGE_VOLUME), 2, 200)
                                 .ifPresent(errores::add);
 
                 return errores;

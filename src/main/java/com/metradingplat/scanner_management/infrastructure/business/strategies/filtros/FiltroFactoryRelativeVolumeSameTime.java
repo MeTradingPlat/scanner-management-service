@@ -12,6 +12,7 @@ import com.metradingplat.scanner_management.domain.models.Filtro;
 import com.metradingplat.scanner_management.domain.models.Parametro;
 import com.metradingplat.scanner_management.domain.models.Valor;
 import com.metradingplat.scanner_management.domain.models.ValorCondicional;
+import com.metradingplat.scanner_management.domain.models.ValorInteger;
 import com.metradingplat.scanner_management.domain.models.ValorString;
 
 import com.metradingplat.scanner_management.infrastructure.business.strategies.IFiltroFactory;
@@ -80,6 +81,8 @@ public class FiltroFactoryRelativeVolumeSameTime implements IFiltroFactory {
         // siempre al default de 1 minuto sin importar la intencion real.
         parametros.add(this.crearParametroTimeframe(
                 (ValorString) valoresSeleccionados.get(EnumParametro.TIMEFRAME_RELATIVE_VOLUME_PERCENT)));
+        parametros.add(this.crearParametroNumeroDias(
+                (ValorInteger) valoresSeleccionados.get(EnumParametro.NUMERO_DIAS_RELATIVE_VOLUME_SAME_TIME)));
 
         filtro.setParametros(parametros);
         return filtro;
@@ -125,6 +128,17 @@ public class FiltroFactoryRelativeVolumeSameTime implements IFiltroFactory {
                 EnumParametro.TIMEFRAME_RELATIVE_VOLUME_PERCENT.getEtiqueta(), valor, opciones);
     }
 
+    private Parametro crearParametroNumeroDias(ValorInteger valorUsuario) {
+        EnumTipoValor enumTipoValor = EnumTipoValor.INTEGER;
+        List<Valor> opciones = this.obtenerOpciones(new IEnumValores[0]);
+        ValorInteger valor = new ValorInteger(
+                "etiqueta.vacia",
+                enumTipoValor,
+                valorUsuario != null ? valorUsuario.getValor() : 10);
+        return new Parametro(EnumParametro.NUMERO_DIAS_RELATIVE_VOLUME_SAME_TIME,
+                EnumParametro.NUMERO_DIAS_RELATIVE_VOLUME_SAME_TIME.getEtiqueta(), valor, opciones);
+    }
+
     @Override
     public List<ResultadoValidacion> validarValoresSeleccionados(Map<EnumParametro, Valor> valoresSeleccionados) {
         List<ResultadoValidacion> errores = new ArrayList<>();
@@ -138,6 +152,11 @@ public class FiltroFactoryRelativeVolumeSameTime implements IFiltroFactory {
                 EnumParametro.TIMEFRAME_RELATIVE_VOLUME_PERCENT,
                 valoresSeleccionados.get(EnumParametro.TIMEFRAME_RELATIVE_VOLUME_PERCENT),
                 TIMEFRAMES_SOPORTADOS)
+                .ifPresent(errores::add);
+
+        this.objValidador
+                .validarInteger(this.enumFiltro, EnumParametro.NUMERO_DIAS_RELATIVE_VOLUME_SAME_TIME,
+                        valoresSeleccionados.get(EnumParametro.NUMERO_DIAS_RELATIVE_VOLUME_SAME_TIME), 1, 90)
                 .ifPresent(errores::add);
 
         return errores;

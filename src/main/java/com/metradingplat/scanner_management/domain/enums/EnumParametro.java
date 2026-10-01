@@ -13,7 +13,10 @@ public enum EnumParametro {
     TIPO_VOLUMEN("parameter.volume.tipoVolumen"),
     TIMEFRAME_VOLUME("parameter.volume.timeframe"),
     TIMEFRAME_AVERAGE_VOLUME("parameter.averageVolume.timeframe"),
+    NUMERO_VELAS_AVERAGE_VOLUME("parameter.averageVolume.numeroVelas"),
     TIMEFRAME_RELATIVE_VOLUME_PERCENT("parameter.relativeVolumePercent.timeframe"),
+    NUMERO_VELAS_RELATIVE_VOLUME("parameter.relativeVolumePercent.numeroVelas"),
+    NUMERO_DIAS_RELATIVE_VOLUME_SAME_TIME("parameter.relativeVolumeSameTime.numeroDias"),
     NUMERO_VELAS_VOLUME_SPIKE("parameter.volumeSpike.numeroVelas"),
     TIMEFRAME_VOLUME_SPIKE("parameter.volumeSpike.timeframe"),
     PROPORCION_VOLUMEN_VOLUME_SPIKE("parameter.volumeSpike.proporcionVolumen"),
@@ -38,6 +41,7 @@ public enum EnumParametro {
     TIPO_PROMEDIO_MOVIL_ATRP("parameter.atrp.tipoPromedioMovil"),
     VALOR_PROMEDIO_MOVIL_ATRP("parameter.atrp.valorPromedioMovil"),
     TIMEFRAME_ATRP("parameter.atrp.timeframe"),
+    PERIODO_ATR_RELATIVE_RANGE("parameter.relativeRange.periodoATR"),
 
     // Parámetros de Momentum e Indicadores Técnicos
     PERIODO_RSI("parameter.rsi.periodoRsi"),
